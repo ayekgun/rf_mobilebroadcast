@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.2 (Python 3.14.10 on linux)" generated="2026-11-17T09:46:39.075003" rpa="false" schemaversion="5">
+<suite id="s1" name="Test Anti Fraud Cms" source="/home/gunawan/Jamob/2026/PB082643640012YA/mobilebroadcast/rf_mobilebroadcast/tests/test_anti_fraud_cms.robot">
+<test id="s1-t1" name="TC-016 Eksekusi Tombol SYNC Menyiarkan Sinyal Reload Anti Fraud Ke ActiveMQ Topic" line="128">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:39.678695" level="INFO">[DB] Data uji berhasil dibersihkan dari database broadcast.</msg>
+<doc>Cleans up test records for client 101, 9999, and specific test numbers.</doc>
+<status status="PASS" start="2026-11-17T09:46:39.296444" elapsed="0.382979"/>
+</kw>
+<kw name="Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:39.680388" level="INFO">[AMQ] Seluruh koneksi STOMP ditutup.</msg>
+<status status="PASS" start="2026-11-17T09:46:39.679988" elapsed="0.000595"/>
+</kw>
+<status status="PASS" start="2026-11-17T09:46:39.295806" elapsed="0.385020"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:39.684141" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T09:46:39.684449" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T09:46:39.728847" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T09:46:39.730544" level="INFO">Created thread &lt;Thread(Thread-1 (__receiver_loop), started daemon 139773699159744)&gt; using func &lt;function default_create_thread at 0x7f1f9a78e8d0&gt;</msg>
+<msg time="2026-11-17T09:46:39.731152" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T09:46:39.771638" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T09:46:40.072244" level="INFO">[AMQ] Subscriber STOMP aktif pada Topic /topic/jns.topic.command. Buffer dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T09:46:39.683023" elapsed="0.389613"/>
+</kw>
+<status status="PASS" start="2026-11-17T09:46:39.681842" elapsed="0.391061"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengeksekusi Tombol SYNC Konfigurasi" owner="anti_fraud_keywords">
+<kw name="Pengguna Berhasil Login Ke Portal JNS7" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:41.391699" level="INFO">[HTTP] Pengguna 'admin' berhasil login ke portal JNS7 Mobile Broadcast.</msg>
+<arg>admin</arg>
+<status status="PASS" start="2026-11-17T09:46:40.075112" elapsed="1.316878"/>
+</kw>
+<kw name="Kirim Permintaan SYNC Konfigurasi" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:42.430008" level="INFO">[HTTP] Tombol SYNC config berhasil dieksekusi.</msg>
+<arg>admin</arg>
+<status status="PASS" start="2026-11-17T09:46:41.392484" elapsed="1.037869"/>
+</kw>
+<status status="PASS" start="2026-11-17T09:46:40.073863" elapsed="2.356738"/>
+</kw>
+<kw name="Then Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:42.432867" level="INFO">--- START Actual Messages Received on ActiveMQ Topic | Length=56 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T09:46:42.433079" level="INFO">[
+  "reload anti-fraud",
+  "reload caffein anti-fraud"
+]</msg>
+<msg time="2026-11-17T09:46:42.433215" level="INFO">--- END Actual Messages Received on ActiveMQ Topic ---</msg>
+<msg time="2026-11-17T09:46:42.433300" level="INFO">[AMQ] Terbukti pesan 'reload anti-fraud' diterima pada ActiveMQ Topic (1 pesan).</msg>
+<arg>1</arg>
+<arg>5.0</arg>
+<status status="PASS" start="2026-11-17T09:46:42.432284" elapsed="0.001161"/>
+</kw>
+<status status="PASS" start="2026-11-17T09:46:42.431367" elapsed="0.002282"/>
+</kw>
+<kw name="And Audit Log SYNC_CONFIG Tercatat Pada Database" owner="anti_fraud_keywords">
+<kw name="Verifikasi Audit Log Tercatat" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:42.637583" level="INFO">--- START Audit Log Row (SYNC_CONFIG) | Length=227 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T09:46:42.637827" level="INFO">{
+  "id": 91,
+  "config_id": 0,
+  "target_client_id": null,
+  "target_value": null,
+  "actor": "admin",
+  "action": "SYNC_CONFIG",
+  "old_value": null,
+  "new_value": "reload anti-fraud",
+  "created_at": "2026-11-17 09:46:41"
+}</msg>
+<msg time="2026-11-17T09:46:42.637995" level="INFO">--- END Audit Log Row (SYNC_CONFIG) ---</msg>
+<arg>0</arg>
+<arg>SYNC_CONFIG</arg>
+<arg>admin</arg>
+<status status="PASS" start="2026-11-17T09:46:42.435182" elapsed="0.203282"/>
+</kw>
+<status status="PASS" start="2026-11-17T09:46:42.434285" elapsed="0.204427"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:43.365583" level="INFO">[NETWORK] Konektivitas ActiveMQ pada Host 60 berhasil dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T09:46:42.640301" elapsed="0.725617"/>
+</kw>
+<kw name="Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:43.367022" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<msg time="2026-11-17T09:46:43.367351" level="INFO">[AMQ] Seluruh koneksi STOMP ditutup.</msg>
+<status status="PASS" start="2026-11-17T09:46:43.366389" elapsed="0.001141"/>
+</kw>
+<kw name="Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T09:46:43.725939" level="INFO">[DB] Data uji berhasil dibersihkan dari database broadcast.</msg>
+<doc>Cleans up test records for client 101, 9999, and specific test numbers.</doc>
+<status status="PASS" start="2026-11-17T09:46:43.367857" elapsed="0.358882"/>
+</kw>
+<status status="PASS" start="2026-11-17T09:46:42.639741" elapsed="1.087269"/>
+</kw>
+<tag>activemq</tag>
+<tag>cms</tag>
+<tag>happy_path</tag>
+<tag>P0</tag>
+<tag>sync</tag>
+<tag>TC-016</tag>
+<status status="PASS" start="2026-11-17T09:46:39.294573" elapsed="4.432766"/>
+</test>
+<doc>Suite Pengujian Otomasi E2E &amp; Backend Anti-Fraud CMS JNS7
+Tiket: PB082643640012YA | SUT: MobileBroadcast JNS7
+Menerapkan Clean BDD Murni, Zero False Positive &amp; Transparent Logging</doc>
+<status status="PASS" start="2026-11-17T09:46:39.075951" elapsed="4.653003"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0" skip="0">activemq</stat>
+<stat pass="1" fail="0" skip="0">cms</stat>
+<stat pass="1" fail="0" skip="0">happy_path</stat>
+<stat pass="1" fail="0" skip="0">P0</stat>
+<stat pass="1" fail="0" skip="0">sync</stat>
+<stat pass="1" fail="0" skip="0">TC-016</stat>
+</tag>
+<suite>
+<stat name="Test Anti Fraud Cms" id="s1" pass="1" fail="0" skip="0">Test Anti Fraud Cms</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

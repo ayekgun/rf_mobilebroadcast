@@ -1,0 +1,315 @@
+Test Case ID,Description,Test Case,Test Scenario,Priority,Test Steps,Test Data/Precondition,Expected Result,Actual Output,Status,Log,Note/Description
+META-SUT,SUT Version & Update Traceability,MobileBroadcast JNS7 Anti-Fraud CMS feat/PB082643640012YA (prev: commit 401eb27),Baseline: commit 401eb27 | Target: commit f14cb8a (branch SIT) | Ticket: PB082643640012YA,META,"[U-01] Parent Menu & RBAC Access Control: Menu Anti Fraud (id: 7) dan 4 submenu (Client Config, Whitelist, Blocklist & Unblock, Audit Log) serta grup CCO di DB new_mobilebroadcast.
+[U-02] Client Config CMS & Approval Lifecycle: CRUD konfigurasi anti-fraud client (rate limit, seq, loss, traffic) dengan siklus approval DRAFT -> PENDING_APPROVAL -> APPROVED -> INACTIVE / REJECTED.
+[U-03] Global ActiveMQ Reload & SYNC: Publikasi command text 'reload anti-fraud' ke ActiveMQ Topic jns.topic.command pada event lifecycle & tombol SYNC.
+[U-04] Anti-Fraud Whitelist: Pengecualian MSISDN (E.164) dan Prefix per client dengan toggle status aktif/nonaktif dan reload ActiveMQ topic.
+[U-05] Blocklist Monitoring & CCO Unblock: Monitoring target fraud aktif dan aksi Unblock khusus CCO dengan alasan wajib & dispatch JSON event ke queue jns.anti.fraud.action.
+[U-06] Comprehensive Audit Trail: Pencatatan histori perubahan audit log (actor, action, old/new value, timestamp, target client).
+[U-07] Multi-Tenant Client Scoping: Isolasi data multi-tenant (JATIS client_id 3 melihat semua vs Non-JATIS hanya melihat datanya sendiri).",SUT: JNS7 Web CMS (Laravel 5.2 / PHP 7.1.33) | Apache 2.4.33 | Target Host: 192.168.181.60 | DB Host: 192.168.181.63 (broadcast & new_mobilebroadcast) | ActiveMQ: 192.168.181.63:61616 | Repo: git@git-rbi.jatismobile.com:jns7/mobilebroadcast.git | Branch: SIT | Commit: f14cb8a,"[U-01] Parent Menu & RBAC Access Control -> diuji oleh: TC-001, TC-002
+[U-02] Client Config CMS & Approval Lifecycle -> diuji oleh: TC-003, TC-004, TC-005, TC-006, TC-007, TC-008, TC-009, TC-010, TC-011, TC-012, TC-013, TC-014, TC-015
+[U-03] Global ActiveMQ Reload & SYNC -> diuji oleh: TC-016, TC-017
+[U-04] Anti-Fraud Whitelist -> diuji oleh: TC-018, TC-019, TC-020, TC-021, TC-022
+[U-05] Blocklist Monitoring & CCO Unblock -> diuji oleh: TC-023, TC-024, TC-025, TC-026
+[U-06] Comprehensive Audit Trail -> diuji oleh: TC-027, TC-028
+[U-07] Multi-Tenant Client Scoping -> diuji oleh: TC-029, TC-030
+Coverage: 30 dari 30 test cases terkait langsung dengan logic update U-01 s/d U-07.",,META,,Dibuat: 2026-11-16 | PIC: QA SDET | Quality Gate: Tahap 1 Hardened v3 | Scope: SUT CMS Web Only
+TC-001,Memverifikasi tampilan menu Anti Fraud dan keempat submenunya pada sidebar untuk pengguna yang berhak.,Verifikasi menu Anti Fraud dan 4 submenu tampil di sidebar portal JNS7.,Akses sidebar - pengguna dengan hak akses Setting dan CCO melihat 4 submenu Anti Fraud.,P0 - Critical,"1. Pastikan pengguna telah terautentikasi dan memiliki hak akses ke menu Anti Fraud.
+2. Buka menu sidebar dan navigasikan ke treeview Anti Fraud.
+3. Verifikasi ketersediaan dan tautan keempat submenu: Client Config, Whitelist, Blocklist & Unblock, dan Audit Log.","BEFORE STATE:
+- User admin terdaftar di grup Super Admin dengan hak akses menu Setting dan Anti Fraud.
+- Database new_mobilebroadcast telah mengeksekusi PB082643640012YA_anti_fraud_parent_menu.sql.
+- URL Portal: http://192.168.181.60/mobilebroadcast/","- Sidebar memuat parent menu 'Anti Fraud' dengan icon 'fa fa-shield'.
+- Keempat submenu tampil: 'Client Config' (/antifraud/config), 'Whitelist' (/antifraud/whitelist), 'Blocklist & Unblock' (/antifraud/blocks), 'Audit Log' (/antifraud/audit).
+- Status HTTP 200 OK saat tiap halaman submenu dibuka.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat 0 event local.ERROR. Apache error_log bersih dari fatal error php7.",Eksekusi TC-001 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:26:38] PASS in 23.28s. All Given/When/Then assertions satisfied.,Validasi RBAC menu sidebar visual & route accessibility.
+TC-002,Memverifikasi penolakan akses dan pengalihan aman bagi pengguna yang tidak memiliki hak akses ke menu Anti Fraud.,Validasi penolakan akses ke rute Anti Fraud bagi akun tanpa permission.,Security RBAC - user tanpa izin mengakses endpoint /antifraud/config dan AJAX search.,P1 - High,"1. Login menggunakan akun pengguna tanpa hak akses ke menu Anti Fraud.
+2. Akses langsung URL /antifraud/config melalui address bar browser.
+3. Kirim permintaan HTTP GET ke endpoint AJAX /antifraud/config/search-clients.
+4. Verifikasi respons penolakan dan pengalihan halaman.","BEFORE STATE:
+- User non-authorized terdaftar tanpa mapping group ke menu Anti Fraud di tabel access_controls.
+- Akun uji: user role terbatas tanpa akses Setting / CCO.","- Akses halaman /antifraud/config dialihkan (redirect HTTP 302/403) ke home atau login, data CMS tidak dirender.
+- Endpoint AJAX /antifraud/config/search-clients mengembalikan HTTP 403 Forbidden dengan pesan 'Not authorized'.
+- [LOG CONTRACT]: storage/logs/laravel.log delta tidak mengalami unhandled exception (zero FatalErrorException).",Eksekusi TC-002 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:26:48] PASS in 9.67s. All Given/When/Then assertions satisfied.,Proteksi unauthorized direct URL browsing & AJAX injection.
+TC-003,Memverifikasi penambahan konfigurasi Anti Fraud baru dengan status default DRAFT dan komparasi field-by-field database lengkap.,Tambah konfigurasi Anti Fraud client baru dengan status awal DRAFT.,"Happy Path Create Config - client baru menyimpan pengaturan Rate Limit, Sequential, Loss, dan Traffic Anomaly.",P0 - Critical,"1. Buka halaman Client Config (/antifraud/config) dan klik tombol Add Config.
+2. Pilih client target yang belum memiliki konfigurasi anti-fraud.
+3. Atur parameter Rate Limit, Sequential Windows, Loss Monitoring, dan Traffic Anomaly.
+4. Klik tombol Save untuk menyimpan konfigurasi.
+5. Lakukan verifikasi field-by-field antara payload form input dengan baris aktual di tabel anti_fraud_config dan audit log.","BEFORE STATE:
+- Client ID 100 ('Client Test Alpha') belum memiliki konfigurasi di tabel anti_fraud_config.
+- Payload Form:
+  client_id: 100, sender_id: 0, division_id: 0,
+  enable_rate_limit: 1, rate_limit_windows: [{""val"":10,""unit"":""MINUTE"",""limit"":50,""act"":""DROP""}],
+  enable_sequential: 1, seq_windows: [{""val"":5,""unit"":""MINUTE"",""limit"":20,""pattern"":""ASC"",""act"":""REJECT""}],
+  enable_loss_monitoring: 1, loss_thresholds: [{""operator"":""TSEL"",""win_val"":1,""win_unit"":""HOUR"",""warn"":5,""crit"":10,""act"":""ALERT""}],
+  enable_traffic_anomaly: 1, traffic_config: {""threshold_pct"":30,""window"":{""val"":1,""unit"":""HOUR""},""min_baseline"":100,""act"":""DROP""},
+  rule_actions: {""rate_limit"":""DROP"",""sequential"":""REJECT"",""loss"":""ALERT"",""traffic"":""DROP""},
+  alert_emails: 'alert@jatismobile.com'","- Baris baru bertambah di tabel anti_fraud_config dengan client_id = 100.
+- Komparasi field-by-field DB terbukti 100% cocok:
+  * sender_id = 0, division_id = 0
+  * enable_rate_limit = 1, rate_limit_windows = '[{""val"":10,""unit"":""MINUTE"",""limit"":50,""act"":""DROP""}]'
+  * enable_sequential = 1, seq_windows = '[{""val"":5,""unit"":""MINUTE"",""limit"":20,""pattern"":""ASC"",""act"":""REJECT""}]'
+  * enable_loss_monitoring = 1, loss_thresholds = '[{""operator"":""TSEL"",""win_val"":1,""win_unit"":""HOUR"",""warn"":5,""crit"":10,""act"":""ALERT""}]'
+  * enable_traffic_anomaly = 1, traffic_config = '{""threshold_pct"":30,""window"":{""val"":1,""unit"":""HOUR""},""min_baseline"":100,""act"":""DROP""}'
+  * rule_actions = '{""rate_limit"":""DROP"",""sequential"":""REJECT"",""loss"":""ALERT"",""traffic"":""DROP""}'
+  * alert_emails = 'alert@jatismobile.com'
+  * approval_status = 'DRAFT'
+  * approved_by IS NULL
+- Tabel anti_fraud_config_audit_log bertambah 1 baris: action = 'CONFIG_INSERT', actor = nama login, target_client_id = 100, new_value memuat seluruh JSON payload.
+- [LOG CONTRACT]: storage/logs/laravel.log delta bebas dari local.ERROR.",Eksekusi TC-003 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:26:52] PASS in 4.01s. All Given/When/Then assertions satisfied.,TEARDOWN: DELETE FROM broadcast.anti_fraud_config WHERE client_id = 100; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id = 100;
+TC-004,Memverifikasi penolakan duplikasi konfigurasi untuk client yang telah memiliki konfigurasi pada status DRAFT, APPROVED, maupun INACTIVE.,Validasi penolakan penambahan konfigurasi kedua untuk client yang sama lintas seluruh status.,Negative Validation - pembatasan satu konfigurasi per client (UNIQUE KEY client_id).,P1 - High,"1. Uji skenario duplikasi 1: Buka modal Add Config, pilih Client ID 101 yang berstatus DRAFT, lalu klik Save.
+2. Uji skenario duplikasi 2: Buka modal Add Config, pilih Client ID 102 yang berstatus APPROVED, lalu klik Save.
+3. Uji skenario duplikasi 3: Buka modal Add Config, pilih Client ID 103 yang berstatus INACTIVE, lalu klik Save.
+4. Verifikasi seluruh upaya ditolak dan tidak ada penambahan baris baru di database.",Eksekusi TC-004 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:26:56] PASS in 3.76s. All Given/When/Then assertions satisfied.,Not Executed,,"TEARDOWN: DELETE FROM broadcast.anti_fraud_config WHERE client_id IN (101, 102, 103); DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id IN (101, 102, 103);"
+TC-005,Memverifikasi penolakan penyimpanan konfigurasi jika validasi boundary Loss Monitoring gagal (operator kosong, threshold warn/crit negatif/kosong, atau hierarki warn >= crit tidak valid).,Validasi penolakan aktivasi Loss Monitoring dengan data field threshold warn dan crit melanggar aturan boundary atau hierarki.,Boundary & Mandatory Validation - validasi form dinamis Loss Monitoring dengan kombinasi field operator, val, unit,Eksekusi TC-005 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:00] PASS in 4.02s. All Given/When/Then assertions satisfied.,"1. Uji Boundary 1 (Operator Kosong): Aktifkan checkbox Loss Monitoring (enable_loss_monitoring = 1), kosongkan operator (''), isi val = 1, unit = 'HOUR', warn = 5, crit = 10, lalu klik Save -> Verifikasi penolakan: 'Pilih operator pada setiap baris Loss Monitoring'.
+2. Uji Boundary 2 (Window Value Invalid): Isi operator = 'TELKOMSEL', val = 0 atau negatif (batas invalid) vs val = 1 (batas minimum valid), unit = 'HOUR', warn = 5, crit = 10 -> Verifikasi penolakan pada val < 1.
+3. Uji Boundary 3 (Threshold Negatif): Isi operator = 'TELKOMSEL', val = 1, unit = 'HOUR', warn = -1 atau crit = -1 (invalid) vs warn = 5, crit = 10 (valid) -> Verifikasi penolakan pada nilai negatif.
+4. Uji Boundary 4 (Hierarki Ambang Batas Tidak Valid): Isi operator = 'TELKOMSEL', val = 1, unit = 'HOUR', warn = 15, crit = 10 (kondisi warn >= crit di mana batas warning melebihi critical) -> Verifikasi penolakan hierarki ambang batas.
+5. Uji Boundary 5 (Kombinasi Batas Valid): Isi operator = 'TELKOMSEL', val = 1, unit = 'HOUR', warn = 5, crit = 10 -> Verifikasi form lolos validasi.
+6. Verifikasi bahwa pada setiap penolakan validasi, input form lainnya (client, sender, division, rate limit, seq windows) tetap bertahan (repopulated).","BEFORE STATE:
+- Form konfigurasi dibuka untuk client baru (Client ID 110).
+- Checkbox enable_loss_monitoring diaktifkan dengan kombinasi field operator, val, unit, warn, dan crit diuji secara bertahap.","- Pada Uji Boundary 1 s/d 4 (operator kosong, val < 1, warn/crit < 0, warn >= crit), penyimpanan ditolak dengan pesan kesalahan validasi spesifik.
+- Database anti_fraud_config tidak mengalami penambahan baris untuk Client ID 110 saat validasi ditolak.
+- Pada Uji Boundary 5 (kombinasi batas valid: operator valid, val >= 1, warn < crit), validasi form berhasil diproses.
+- Field input form lainnya (client, sender, division, rate limit, seq windows) terbukti tetap bertahan (repopulated) tanpa reset form.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat validasi gagal tanpa unhandled exception 500.",,Not Executed,,TEARDOWN: DELETE FROM broadcast.anti_fraud_config WHERE client_id = 110; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id = 110;
+TC-006,Memverifikasi pembaruan nilai spesifik pada konfigurasi berstatus DRAFT dan membuktikan seluruh kolom lainnya tidak berubah (full snapshot comparison).,Edit konfigurasi berstatus DRAFT dan verifikasi pembaruan parameter spesifik serta ketiadaan perubahan pada kolom lain.,Update Config - modifikasi parameter deterministik dan komparasi full snapshot DB.,P1 - High,"1. Siapkan fixture konfigurasi Client ID 100 berstatus DRAFT dan ambil full snapshot seluruh kolom database awal.
+2. Buka halaman Client Config dan klik Edit pada Client ID 100.
+3. Ubah parameter alert_emails dari 'alert@jatismobile.com' menjadi 'secops@jatismobile.com'.
+4. Ubah limit pada window Rate Limit pertama dari 50 menjadi 80.
+5. Klik Save.
+6. Ambil full snapshot database setelah update dan lakukan komparasi kolom-demi-kolom sebelum vs sesudah.","BEFORE STATE:
+- Konfigurasi Client ID 100 berada dalam status approval_status = 'DRAFT' dengan alert_emails = 'alert@jatismobile.com' dan rate limit = 50.
+- Full snapshot awal: sender_id = 0, division_id = 0, enable_rate_limit = 1, enable_sequential = 1, seq_windows valid, enable_loss_monitoring = 0, enable_traffic_anomaly = 0, rule_actions valid, approval_status = 'DRAFT', approved_by = NULL.","- Kolom yang terbukti berubah hanya kolom target: alert_emails menjadi 'secops@jatismobile.com', rate_limit_windows limit pertama menjadi 80, dan timestamp updated_at.
+- Seluruh kolom lainnya terbukti 100% IDENTIK dan TIDAK BERUBAH: client_id, sender_id, division_id, enable_rate_limit, enable_sequential, seq_windows, enable_loss_monitoring, loss_thresholds, enable_traffic_anomaly, traffic_config, rule_actions.
+- Kolom approval_status tetap 'DRAFT' dan approved_by tetap NULL.
+- Audit log mencatat action = 'CONFIG_UPDATE' dengan diff old_value dan new_value yang memuat perubahan field tersebut secara spesifik.
+- [LOG CONTRACT]: storage/logs/laravel.log delta bebas dari local.ERROR.",Eksekusi TC-006 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:05] PASS in 5.23s. All Given/When/Then assertions satisfied.,TEARDOWN: DELETE FROM broadcast.anti_fraud_config WHERE client_id = 100; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id = 100;
+TC-007,Memverifikasi bahwa pengeditan konfigurasi berstatus APPROVED maupun PENDING_APPROVAL dengan parameter deterministik mereset status menjadi DRAFT dan mengosongkan approved_by.,Edit konfigurasi APPROVED atau PENDING_APPROVAL mengakibatkan status kembali menjadi DRAFT dan reset approved_by.,State Reset Guard - modifikasi data approved/pending secara deterministik wajib melalui siklus approval ulang.,P0 - Critical,"1. Skenario 1 (APPROVED): Edit konfigurasi Client ID 105 (status APPROVED, approved_by = 'supervisor'), ubah deterministik alert_emails menjadi 'modified_approved@jatismobile.com', lalu simpan.
+2. Verifikasi status konfigurasi Client ID 105 di database berubah menjadi DRAFT dan approved_by direset menjadi NULL.
+3. Skenario 2 (PENDING_APPROVAL): Edit konfigurasi Client ID 104 (status PENDING_APPROVAL, approved_by = NULL), ubah deterministik alert_emails menjadi 'modified_pending@jatismobile.com', lalu simpan.
+4. Verifikasi status konfigurasi Client ID 104 di database berubah menjadi DRAFT dan approved_by tetap NULL.
+5. Verifikasi audit log mencatat aksi CONFIG_UPDATE untuk kedua skenario.","BEFORE STATE:
+- Fixture 1: Client ID 105 memiliki status approval_status = 'APPROVED', approved_by = 'supervisor', alert_emails = 'prod@jatismobile.com'.
+- Fixture 2: Client ID 104 memiliki status approval_status = 'PENDING_APPROVAL', approved_by = NULL, alert_emails = 'review@jatismobile.com'.","- Skenario 1: Database mencatat alert_emails = 'modified_approved@jatismobile.com', approval_status ter-reset menjadi 'DRAFT', dan approved_by direset menjadi NULL.
+- Skenario 2: Database mencatat alert_emails = 'modified_pending@jatismobile.com', approval_status ter-reset menjadi 'DRAFT', dan approved_by tetap NULL.
+- UI menampilkan notifikasi: 'Config berhasil diupdate dan kembali ke DRAFT; Submit ulang untuk approval CCO...'.
+- Audit log mencatat action = 'CONFIG_UPDATE' untuk kedua client dengan keterangan status reset ke DRAFT.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat transisi status ke DRAFT tanpa error.",Eksekusi TC-007 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:09] PASS in 3.94s. All Given/When/Then assertions satisfied.,"TEARDOWN: DELETE FROM broadcast.anti_fraud_config WHERE client_id IN (104, 105); DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id IN (104, 105);"
+TC-008,Memverifikasi pengajuan persetujuan (Submit) konfigurasi DRAFT menjadi PENDING_APPROVAL dengan pembuktian ActiveMQ subscriber aktif dan 0 pesan reload selama observation window.,Pengguna melakukan Submit konfigurasi DRAFT menjadi PENDING_APPROVAL dan membuktikan ketiadaan sinyal reload pada observation window.,Lifecycle Transition - pengajuan persetujuan konfigurasi ke CCO dengan pembuktian negatif ActiveMQ.,P0 - Critical,"1. Siapkan Lingkungan Pengujian Eksklusif: pastikan seluruh publisher eksternal dihentikan atau tidak aktif sebelum dan selama pengamatan.
+2. Hubungkan subscriber ActiveMQ ke broker pada host 192.168.181.63:61616 dan buat subscription aktif ke topic jns.topic.command sebelum aksi dieksekusi.
+3. Lakukan handshake untuk memastikan subscriber berstatus READY_AND_LISTENING dan catat baseline penerimaan pesan subscriber (baseline = 0).
+4. Buka halaman Client Config sebagai pengguna biasa dan temukan konfigurasi Client ID 106 berstatus DRAFT.
+5. Klik tombol Submit dan konfirmasi dialog pengajuan.
+6. Jalankan Observation Window selama 5.0 detik penuh setelah Submit selesai dieksekusi dalam lingkungan eksklusif.
+7. Verifikasi jumlah pesan baru yang diterima subscriber selama observation window adalah tepat 0 pesan (delta = 0 relatif terhadap baseline, membuktikan $publishReload = false).
+8. Verifikasi perubahan status pada database dan audit log.","BEFORE STATE:
+- Fixture Client ID 106 memiliki status approval_status = 'DRAFT'.
+- Lingkungan pengujian eksklusif aktif: publisher lain dipastikan tidak aktif.
+- Subscriber ActiveMQ terhubung dan terverifikasi siap (READY_AND_LISTENING) sebelum aksi Submit dijalankan.","- Status konfigurasi di UI berubah menjadi label 'PENDING_APPROVAL'.
+- Kolom approval_status di database anti_fraud_config berubah menjadi 'PENDING_APPROVAL'.
+- Audit log mencatat event action = 'SUBMIT' untuk Client ID 106.
+- Subscriber ActiveMQ yang aktif memantau topic jns.topic.command di lingkungan eksklusif menerima tepat 0 pesan baru (delta = 0 dari baseline) selama observation window 5.0 detik.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat submit sukses tanpa adanya log publikasi reload ActiveMQ.",Eksekusi TC-008 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:18] PASS in 9.20s. All Given/When/Then assertions satisfied.,TEARDOWN: DELETE FROM broadcast.anti_fraud_config WHERE client_id = 106; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id = 106;
+TC-009,Memverifikasi restriksi hak akses approval di mana tombol Approve/Reject tersembunyi bagi pengguna non-CCO dan direct HTTP POST ke /approve maupun /reject ditolak tegas.,Verifikasi restriksi hak akses approval bagi pengguna non-CCO pada UI dan direct HTTP endpoint /approve dan /reject.,Security RBAC - proteksi endpoint /antifraud/config/approve dan /reject dari user non-CCO.,P0 - Critical,"1. Login sebagai pengguna non-CCO dan buka halaman Client Config.
+2. Amati baris konfigurasi berstatus PENDING_APPROVAL (tombol Approve dan Reject tidak boleh ada).
+3. Kirim direct HTTP POST ke /antifraud/config/approve menggunakan session pengguna non-CCO.
+4. Kirim direct HTTP POST ke /antifraud/config/reject menggunakan session pengguna non-CCO.
+5. Verifikasi penolakan otorisasi pada kedua endpoint dan pastikan status database tidak berubah.","BEFORE STATE:
+- Konfigurasi target berstatus 'PENDING_APPROVAL'.
+- Akun login bukan anggota grup CCO.","- Tombol Approve dan Reject tidak dirender pada UI bagi pengguna non-CCO.
+- Direct HTTP POST ke /approve ditolak dengan HTTP 403 Forbidden atau pesan 'Not authorized'.
+- Direct HTTP POST ke /reject ditolak dengan HTTP 403 Forbidden atau pesan 'Not authorized'.
+- Kolom approval_status di database tetap 'PENDING_APPROVAL' (tidak berubah).
+- Topic ActiveMQ jns.topic.command tidak menerima sinyal reload.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat akses ditolak tanpa error 500.",Eksekusi TC-009 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:23] PASS in 5.35s. All Given/When/Then assertions satisfied.,Verifikasi strict RBAC privilese CCO pada kedua endpoint approval.
+TC-010,Memverifikasi persetujuan konfigurasi PENDING_APPROVAL oleh CCO menjadi APPROVED disertai pengisian approved_by dan broadcast reload ActiveMQ.,CCO menyetujui konfigurasi PENDING_APPROVAL menjadi APPROVED.,Happy Path Approval - persetujuan oleh role CCO dengan broadcast ActiveMQ.,P0 - Critical,"1. Aktifkan subscriber pada ActiveMQ Topic jns.topic.command dan pastikan status READY_AND_LISTENING.
+2. Login sebagai pengguna dengan privilege grup CCO.
+3. Buka halaman Client Config dan klik tombol Approve pada konfigurasi PENDING_APPROVAL.
+4. Konfirmasi dialog persetujuan.
+5. Verifikasi perubahan status di database, pengisian approved_by, audit log, dan penangkapan payload reload oleh subscriber.","BEFORE STATE:
+- Konfigurasi target berstatus 'PENDING_APPROVAL'.
+- Akun login adalah anggota grup CCO.
+- Subscriber memantau topic jns.topic.command.","- Status konfigurasi di database berubah menjadi 'APPROVED'.
+- Kolom approved_by di tabel anti_fraud_config terisi dengan username CCO pengeksekusi.
+- Subscriber ActiveMQ menerima pesan persis: 'reload anti-fraud' (plain text string).
+- Audit log mencatat action = 'APPROVE' beserta snapshot new_value lengkap.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat event approval sukses dan broadcast reload.",Eksekusi TC-010 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:29] PASS in 5.26s. All Given/When/Then assertions satisfied.,Transisi PENDING_APPROVAL -> APPROVED.
+TC-011,Memverifikasi penolakan konfigurasi PENDING_APPROVAL oleh CCO menjadi REJECTED disertai broadcast reload ActiveMQ.,CCO menolak konfigurasi PENDING_APPROVAL menjadi REJECTED.,Rejection Path - penolakan konfigurasi oleh role CCO.,P1 - High,"1. Aktifkan subscriber pada ActiveMQ Topic jns.topic.command.
+2. Login sebagai CCO dan temukan baris konfigurasi PENDING_APPROVAL.
+3. Klik tombol Reject dan konfirmasi penolakan.
+4. Verifikasi perubahan status pada database, ketiadaan approved_by, audit log, dan penangkapan pesan reload pada ActiveMQ.","BEFORE STATE:
+- Konfigurasi target berstatus 'PENDING_APPROVAL'.
+- Subscriber memantau topic jns.topic.command.","- Status konfigurasi di database berubah menjadi 'REJECTED'.
+- Kolom approved_by tetap NULL / dikosongkan.
+- Subscriber ActiveMQ menangkap pesan plain text: 'reload anti-fraud'.
+- Audit log mencatat action = 'REJECT'.
+- [LOG CONTRACT]: storage/logs/laravel.log delta bebas dari local.ERROR.",Eksekusi TC-011 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:33] PASS in 3.84s. All Given/When/Then assertions satisfied.,Transisi PENDING_APPROVAL -> REJECTED.
+TC-012,Memverifikasi aksi Reopen pada konfigurasi berstatus REJECTED mengembalikan status ke PENDING_APPROVAL disertai broadcast reload ActiveMQ.,Reopen konfigurasi berstatus REJECTED kembali menjadi PENDING_APPROVAL.,Lifecycle Reopen - pembukaan kembali konfigurasi yang ditolak untuk ditinjau ulang.,P1 - High,"1. Aktifkan subscriber pada ActiveMQ Topic jns.topic.command.
+2. Temukan baris konfigurasi berstatus REJECTED.
+3. Klik tombol Reopen dan konfirmasi.
+4. Verifikasi pembaruan status pada database, audit log, dan penangkapan pesan reload pada ActiveMQ.","BEFORE STATE:
+- Konfigurasi target memiliki status approval_status = 'REJECTED'.
+- Subscriber memantau topic jns.topic.command.","- Status konfigurasi di database berubah kembali menjadi 'PENDING_APPROVAL'.
+- Kolom approved_by tetap NULL.
+- Subscriber ActiveMQ menangkap pesan plain text: 'reload anti-fraud'.
+- Audit log mencatat action = 'REOPEN'.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat event reopen.",Eksekusi TC-012 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:37] PASS in 4.52s. All Given/When/Then assertions satisfied.,Transisi REJECTED -> PENDING_APPROVAL.
+TC-013,Memverifikasi penonaktifan konfigurasi APPROVED oleh CCO menjadi INACTIVE disertai broadcast reload ActiveMQ.,CCO menonaktifkan konfigurasi APPROVED menjadi INACTIVE.,Deactivation Lifecycle - dekomisi konfigurasi aktif oleh CCO.,P1 - High,"1. Aktifkan subscriber pada ActiveMQ Topic jns.topic.command.
+2. Login sebagai CCO dan temukan konfigurasi berstatus APPROVED.
+3. Klik tombol Deactivate dan konfirmasi tindakan.
+4. Verifikasi perubahan status menjadi INACTIVE di database, audit log, dan penangkapan reload pada ActiveMQ.","BEFORE STATE:
+- Konfigurasi target berstatus approval_status = 'APPROVED'.
+- Subscriber memantau topic jns.topic.command.","- Status konfigurasi di database berubah menjadi 'INACTIVE'.
+- Subscriber ActiveMQ menangkap pesan plain text: 'reload anti-fraud'.
+- Audit log mencatat action = 'DEACTIVATE'.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat status transisi ke INACTIVE.",Eksekusi TC-013 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:41] PASS in 4.08s. All Given/When/Then assertions satisfied.,Transisi APPROVED -> INACTIVE.
+TC-014,Memverifikasi pembukaan kembali konfigurasi berstatus INACTIVE menjadi PENDING_APPROVAL disertai broadcast reload ActiveMQ.,Reopen konfigurasi berstatus INACTIVE kembali menjadi PENDING_APPROVAL.,Lifecycle Reopen Inactive - pengaktifan ulang konfigurasi nonaktif.,P2 - Medium,"1. Aktifkan subscriber pada ActiveMQ Topic jns.topic.command.
+2. Temukan konfigurasi berstatus INACTIVE pada tabel.
+3. Klik tombol Reopen dan konfirmasi.
+4. Verifikasi status baru pada database, audit log, dan penangkapan pesan reload pada ActiveMQ.","BEFORE STATE:
+- Konfigurasi target berstatus approval_status = 'INACTIVE'.
+- Subscriber memantau topic jns.topic.command.","- Status konfigurasi di database berubah menjadi 'PENDING_APPROVAL'.
+- Subscriber ActiveMQ menangkap pesan plain text: 'reload anti-fraud'.
+- Audit log mencatat action = 'REOPEN'.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat reopen dari inactive.",Eksekusi TC-014 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:45] PASS in 4.27s. All Given/When/Then assertions satisfied.,Transisi INACTIVE -> PENDING_APPROVAL.
+TC-015,Memverifikasi penolakan eksekusi transisi status ilegal pada state machine konfigurasi menggunakan 3 fixture independen dan pembuktian status DB tidak berubah serta 0 reload ActiveMQ.,Validasi penolakan transisi status ilegal pada state machine konfigurasi dengan snapshot independen dan pembuktian negatif ActiveMQ.,Negative Validation - proteksi state machine dari transisi status yang tidak valid dengan snapshot komparasi dan observation window ActiveMQ.,P1 - High,"1. Siapkan Lingkungan Pengujian Eksklusif: pastikan publisher lain tidak aktif dan pasang subscriber pada topic jns.topic.command dengan status READY_AND_LISTENING sebelum request dikirim.
+2. Request Ilegal 1 (Fixture A / Client ID 107, APPROVED): Ambil snapshot awal, kirim HTTP POST ke /antifraud/config/submit, amati observation window 3.0 detik pada subscriber di lingkungan eksklusif.
+3. Request Ilegal 2 (Fixture B / Client ID 108, DRAFT): Ambil snapshot awal, kirim HTTP POST ke /antifraud/config/approve, amati observation window 3.0 detik pada subscriber di lingkungan eksklusif.
+4. Request Ilegal 3 (Fixture C / Client ID 109, DRAFT): Ambil snapshot awal, kirim HTTP POST ke /antifraud/config/deactivate, amati observation window 3.0 detik pada subscriber di lingkungan eksklusif.
+5. Ambil snapshot sesudah request untuk ketiga fixture dan verifikasi integritas database serta subscriber ActiveMQ.","BEFORE STATE:
+- Fixture A (Client ID 107): approval_status = 'APPROVED', approved_by = 'admin_approver'.
+- Fixture B (Client ID 108): approval_status = 'DRAFT', approved_by = NULL.
+- Fixture C (Client ID 109): approval_status = 'DRAFT', approved_by = NULL.
+- Lingkungan pengujian eksklusif aktif: publisher lain tidak aktif dan subscriber topic siap mendengarkan sebelum aksi.","- Request 1 (Submit pada APPROVED) ditolak dengan pesan: 'Transisi tidak valid dari status APPROVED'. Snapshot Fixture A 100% identik dengan kondisi awal (tetap APPROVED).
+- Request 2 (Approve pada DRAFT) ditolak dengan pesan: 'Transisi tidak valid dari status DRAFT'. Snapshot Fixture B 100% identik dengan kondisi awal (tetap DRAFT).
+- Request 3 (Deactivate pada DRAFT) ditolak dengan pesan: 'Transisi tidak valid dari status DRAFT'. Snapshot Fixture C 100% identik dengan kondisi awal (tetap DRAFT).
+- Tidak ada penambahan audit log baru pada ketiga fixture.
+- Subscriber ActiveMQ di lingkungan eksklusif menerima tepat 0 pesan reload (delta = 0) selama observation window pada ketiga request ilegal tersebut.
+- [LOG CONTRACT]: storage/logs/laravel.log delta tidak mencatat internal error 500.",Eksekusi TC-015 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:55] PASS in 9.83s. All Given/When/Then assertions satisfied.,"TEARDOWN: DELETE FROM broadcast.anti_fraud_config WHERE client_id IN (107, 108, 109); DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id IN (107, 108, 109);"
+TC-016,Memverifikasi penekanan tombol SYNC Config mengirimkan pesan reload plain text ke topic ActiveMQ dan membaca payload aktual via subscriber.,Eksekusi tombol SYNC Config menyiarkan sinyal reload anti-fraud ke ActiveMQ Topic dan diverifikasi isi payload aktualnya.,Integration ActiveMQ - publikasi pesan broadcast plain text reload anti-fraud.,P0 - Critical,"1. Pasang subscriber STOMP/OpenWire aktif pada ActiveMQ Topic jns.topic.command dan pastikan status READY_AND_LISTENING.
+2. Buka halaman Client Config (/antifraud/config) dan klik tombol SYNC config.
+3. Konfirmasi dialog pengiriman sinyal reload.
+4. Tangkap payload aktual dari subscriber ActiveMQ.
+5. Verifikasi isi payload dan pencatatan riwayat audit.","BEFORE STATE:
+- Broker ActiveMQ berjalan di 192.168.181.63:61616.
+- Topic target: jns.topic.command.
+- Subscriber aktif mendengarkan topic target.","- Notifikasi sukses muncul di antarmuka: 'SYNC command broadcast berhasil dikirim'.
+- Subscriber ActiveMQ menerima pesan dengan isi teks persis: 'reload anti-fraud' (plain text string, bukan format JSON).
+- Tabel anti_fraud_config_audit_log mencatat baris baru dengan action = 'SYNC_CONFIG', actor = nama login.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat event reload broadcast sukses dikirim.",Eksekusi TC-016 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:27:59] PASS in 3.92s. All Given/When/Then assertions satisfied.,Verifikasi kontrak integrasi ActiveMQ topic via subscriber nyata.
+TC-017,Memverifikasi bahwa kelima transisi persetujuan secara independen dan terpisah masing-masing memicu broadcast reload ke ActiveMQ Topic melalui serial protocol di lingkungan eksklusif.,Pengujian independen 5 transisi siklus approval masing-masing memicu pesan reload anti-fraud ke ActiveMQ Topic dalam lingkungan pengujian eksklusif.,Integration ActiveMQ - validasi independen auto-reload trigger pada 5 transisi approval eksplisit dengan serial execution protocol di lingkungan eksklusif.,P1 - High,"1. Terapkan Lingkungan Pengujian Eksklusif: pastikan tidak ada publisher lain yang aktif selama pengujian.
+2. Jalankan kelima transisi approval secara sekuensial satu demi satu (serial execution).
+3. Transisi 1 (Approve): Pastikan subscriber aktif READY_AND_LISTENING sebelum aksi -> Eksekusi Approve pada Fixture 1 (status PENDING_APPROVAL) -> Subscriber menangkap tepat 1 pesan baru berisi 'reload anti-fraud'.
+4. Transisi 2 (Reject): Pastikan subscriber aktif sebelum aksi -> Eksekusi Reject pada Fixture 2 (status PENDING_APPROVAL) -> Subscriber menangkap tepat 1 pesan baru berisi 'reload anti-fraud'.
+5. Transisi 3 (Deactivate): Pastikan subscriber aktif sebelum aksi -> Eksekusi Deactivate pada Fixture 3 (status APPROVED) -> Subscriber menangkap tepat 1 pesan baru berisi 'reload anti-fraud'.
+6. Transisi 4 (Reopen dari REJECTED): Pastikan subscriber aktif sebelum aksi -> Eksekusi Reopen pada Fixture 4 (status eksplisit REJECTED) -> Subscriber menangkap tepat 1 pesan baru berisi 'reload anti-fraud'.
+7. Transisi 5 (Reopen dari INACTIVE): Pastikan subscriber aktif sebelum aksi -> Eksekusi Reopen pada Fixture 5 (status eksplisit INACTIVE) -> Subscriber menangkap tepat 1 pesan baru berisi 'reload anti-fraud'.
+8. Verifikasi korelasi 1:1 antara eksekusi transisi spesifik dengan pesan reload yang ditangkap berdasarkan urutan dan timestamp eksekusi di lingkungan eksklusif.","BEFORE STATE:
+- 5 fixture independen: Fixture 1 (PENDING_APPROVAL), Fixture 2 (PENDING_APPROVAL), Fixture 3 (APPROVED), Fixture 4 (REJECTED), Fixture 5 (INACTIVE).
+- Lingkungan pengujian eksklusif aktif: publisher lain dipastikan tidak aktif dan subscriber topic siap mendengarkan sebelum tiap transisi.","- Pada setiap transisi yang dieksekusi secara serial di lingkungan eksklusif, subscriber ActiveMQ menangkap tepat 1 pesan baru (delta = 1) dengan isi persis: 'reload anti-fraud'.
+- Terbukti korelasi 1:1 antara masing-masing transisi lifecycle dengan pesan reload yang ditangkap tanpa tumpang tindih.
+- Waktu publikasi pesan berkorelasi langsung dengan timestamp eksekusi masing-masing transisi.
+- [LOG CONTRACT]: storage/logs/laravel.log delta memuat entri publikasi reload ke broker ActiveMQ pada tiap event.",Eksekusi TC-017 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:03] PASS in 3.94s. All Given/When/Then assertions satisfied.,Pengecekan 5 transisi independen memicu broadcast reload.
+TC-018,Memverifikasi penambahan entri whitelist dengan tipe MSISDN berformat valid standar E.164, penyimpanan database, broadcast reload, dan audit log WHITELIST_ADD.,Tambah entri whitelist tipe MSISDN berformat E.164 dan verifikasi status aktif serta audit WHITELIST_ADD.,Happy Path Whitelist - registrasi nomor MSISDN pengecualian fraud.,P0 - Critical,Eksekusi TC-018 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:07] PASS in 3.75s. All Given/When/Then assertions satisfied.,,Not Executed,,TEARDOWN: DELETE FROM broadcast.anti_fraud_msisdn_whitelist WHERE msisdn_e164 = '6281234567890' AND client_id = 3; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_value = '6281234567890' AND target_client_id = 3;
+TC-019,Memverifikasi penambahan entri whitelist dengan tipe PREFIX berformat sub-prefix valid, penyimpanan database, broadcast reload, dan audit log WHITELIST_ADD.,Tambah entri whitelist tipe PREFIX berformat valid dan verifikasi status aktif serta audit WHITELIST_ADD.,Happy Path Whitelist - registrasi awalan nomor (prefix) pengecualian fraud.,P1 - High,Eksekusi TC-019 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:11] PASS in 3.98s. All Given/When/Then assertions satisfied.,,Not Executed,,TEARDOWN: DELETE FROM broadcast.anti_fraud_prefix_whitelist WHERE sub_prefix = '62812' AND client_id = 3; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_value = '62812' AND target_client_id = 3;
+TC-020,Memverifikasi penolakan penyimpanan whitelist jika format MSISDN atau Prefix tidak valid secara terpisah.,Validasi penolakan penambahan whitelist dengan format MSISDN dan Prefix tidak sesuai aturan secara terpisah.,Boundary & Validation - penolakan format MSISDN non-numerik/invalid E.164 dan format Prefix invalid.,P1 - High,"1. Uji Invalid MSISDN: Buka form Whitelist tipe MSISDN, masukkan data non-numerik ('ABCD') atau tanpa kode negara ('0812345'), lalu klik Simpan.
+2. Uji Invalid Prefix: Buka form Whitelist tipe PREFIX, masukkan string non-numerik ('PREFIX') atau prefix melebihi panjang maksimum, lalu klik Simpan.
+3. Verifikasi pesan kesalahan validasi spesifik pada masing-masing uji.
+4. Verifikasi bahwa database tidak bertambah dan ActiveMQ tidak menerima pesan.","BEFORE STATE:
+- Form Whitelist diisi dengan dataset input tidak valid secara terpisah untuk tipe MSISDN dan PREFIX.","- Pada kedua pengujian, permintaan ditolak dengan pesan kesalahan validasi format.
+- Tidak ada penambahan baris pada tabel anti_fraud_msisdn_whitelist maupun anti_fraud_prefix_whitelist.
+- ActiveMQ Topic tidak menerima sinyal reload.
+- [LOG CONTRACT]: storage/logs/laravel.log delta tidak mengalami unhandled exception.",Eksekusi TC-020 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:15] PASS in 4.40s. All Given/When/Then assertions satisfied.,Validasi integritas format E.164 dan prefix numerik terpisah.
+TC-021,Memverifikasi penolakan duplikasi target aktif dan membuktikan reaktivasi target nonaktif pada tipe MSISDN maupun PREFIX pada fixture terisolasi khusus.,Validasi penolakan duplikasi target aktif dan pembuktian reaktivasi target nonaktif untuk MSISDN dan PREFIX pada fixture terisolasi.,Negative Validation & Auto-Reactivation - penanganan duplikasi dan reaktivasi whitelist untuk MSISDN dan PREFIX pada fixture Client ID 111.,P1 - High,"1. Skenario Duplikasi MSISDN Aktif: Input MSISDN '6281277770001' pada fixture khusus Client ID 111 (kondisi awal is_active = 1) -> Verifikasi penolakan duplikasi.
+2. Skenario Reaktivasi MSISDN Nonaktif: Siapkan MSISDN '6281277770002' pada Client ID 111 (is_active = 0). Input Add Whitelist dengan deskripsi baru -> Verifikasi reaktivasi menjadi is_active = 1.
+3. Skenario Duplikasi PREFIX Aktif: Input Prefix '628177' pada Client ID 111 (kondisi awal is_active = 1) -> Verifikasi penolakan duplikasi.
+4. Skenario Reaktivasi PREFIX Nonaktif: Siapkan Prefix '628178' pada Client ID 111 (is_active = 0). Input Add Whitelist dengan deskripsi baru -> Verifikasi reaktivasi menjadi is_active = 1.
+5. Verifikasi penangkapan reload ActiveMQ dan pencatatan audit log pada kedua skenario reaktivasi.","BEFORE STATE:
+- Fixture khusus terisolasi: Client ID 111 (terpisah dari Client ID 3 milik TC-018/019).
+- MSISDN '6281277770001' (is_active = 1) dan '6281277770002' (is_active = 0) untuk Client ID 111.
+- Prefix '628177' (is_active = 1) dan '628178' (is_active = 0) untuk Client ID 111.","- Skenario Duplikasi (MSISDN & PREFIX): Ditolak konsisten dengan pesan: 'Whitelist sudah aktif untuk client ini'. Baris database untuk Client ID 111 tidak bertambah.
+- Skenario Reaktivasi MSISDN: Baris eksisting '6281277770002' diperbarui (is_active = 1, deskripsi terbarui), subscriber menerima 'reload anti-fraud', audit log mencatat WHITELIST_ADD dengan snapshot reaktivasi.
+- Skenario Reaktivasi PREFIX: Baris eksisting '628178' diperbarui (is_active = 1, deskripsi terbarui), subscriber menerima 'reload anti-fraud', audit log mencatat WHITELIST_ADD dengan snapshot reaktivasi.
+- Seluruh data Client ID 3 milik TC-018 dan TC-019 tidak tersentuh sama sekali.
+- [LOG CONTRACT]: storage/logs/laravel.log delta tidak mencatat fatal crash.",Eksekusi TC-021 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:21] PASS in 5.73s. All Given/When/Then assertions satisfied.,"TEARDOWN: DELETE FROM broadcast.anti_fraud_msisdn_whitelist WHERE client_id = 111 AND msisdn_e164 IN ('6281277770001', '6281277770002'); DELETE FROM broadcast.anti_fraud_prefix_whitelist WHERE client_id = 111 AND sub_prefix IN ('628177', '628178'); DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id = 111;"
+TC-022,Memverifikasi perubahan status Deactivate dan Activate pada entri whitelist tipe MSISDN dan PREFIX beserta broadcast reload ActiveMQ.,Deaktivasi dan reaktivasi entri whitelist MSISDN & PREFIX serta verifikasi pengiriman reload ActiveMQ.,Toggle Status Whitelist - perubahan status operasional whitelist MSISDN dan PREFIX.,P1 - High,"1. Lakukan Deactivate pada entri MSISDN aktif -> Verifikasi is_active = 0, reload terkirim, audit WHITELIST_DEACTIVATE.
+2. Lakukan Activate pada entri MSISDN nonaktif -> Verifikasi is_active = 1, reload terkirim, audit WHITELIST_REACTIVATE.
+3. Lakukan Deactivate pada entri PREFIX aktif -> Verifikasi is_active = 0, reload terkirim, audit WHITELIST_DEACTIVATE.
+4. Lakukan Activate pada entri PREFIX nonaktif -> Verifikasi is_active = 1, reload terkirim, audit WHITELIST_REACTIVATE.","BEFORE STATE:
+- Tersedia entri MSISDN aktif dan entri PREFIX aktif di database.
+- Subscriber memantau topic jns.topic.command.","- Setiap aksi Deactivate mengubah is_active menjadi 0 pada baris target dan mencatat audit log 'WHITELIST_DEACTIVATE'.
+- Setiap aksi Activate mengubah is_active menjadi 1 pada baris target dan mencatat audit log 'WHITELIST_REACTIVATE'.
+- Pada setiap perubahan (total 4 kali toggle), subscriber ActiveMQ Topic menerima pesan 'reload anti-fraud'.
+- [LOG CONTRACT]: storage/logs/laravel.log delta bebas dari local.ERROR.",Eksekusi TC-022 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:25] PASS in 4.09s. All Given/When/Then assertions satisfied.,Verifikasi fungsionalitas toggle lengkap MSISDN & PREFIX.
+TC-023,Memverifikasi tampilan daftar blocklist dan penolakan direct HTTP POST /unblock oleh pengguna non-CCO dengan pembuktian subscriber antrean 0 pesan.,Verifikasi daftar blocklist aktif, ketiadaan tombol Unblock di UI, dan penolakan direct HTTP POST unblock bagi pengguna non-CCO disertai observation window queue.,Monitoring & Security RBAC - proteksi endpoint /antifraud/blocks/unblock dari eksekusi non-CCO dengan pembuktian negatif queue.,P1 - High,"1. Pasang subscriber aktif pada ActiveMQ Queue jns.anti.fraud.action dan verifikasi status READY_AND_LISTENING.
+2. Login sebagai pengguna biasa (non-CCO) dan buka halaman Blocklist (/antifraud/blocks): verifikasi tombol Unblock tidak dirender.
+3. Kirim direct HTTP POST ke /antifraud/blocks/unblock membawa ID target 9997 dan unblock_reason menggunakan sesi non-CCO.
+4. Verifikasi respons penolakan otorisasi (HTTP 403 Forbidden / Not authorized).
+5. Jalankan Observation Window selama 5.0 detik pada queue subscriber.
+6. Verifikasi tepat 0 pesan (zero event) masuk ke queue jns.anti.fraud.action dan status database baris 9997 tetap ACTIVE.",Eksekusi TC-023 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:29] PASS in 3.79s. All Given/When/Then assertions satisfied.,Not Executed,,TEARDOWN: DELETE FROM broadcast.anti_fraud_block_state WHERE id = 9997;
+TC-024,Memverifikasi proses Unblock target fraud pada fixture terisolasi oleh CCO dan komparasi exact JSON payload pada queue ActiveMQ jns.anti.fraud.action.,CCO melakukan Unblock target aktif dengan alasan valid pada fixture terisolasi dan verifikasi payload exact JSON di queue ActiveMQ.,Happy Path Unblock - pelepasan blokir fraud oleh CCO disertai notifikasi exact JSON ke Action Queue.,P0 - Critical,"1. Siapkan fixture terisolasi di tabel anti_fraud_block_state dengan id = 9999, client_id = 100, scope = 'MSISDN', target_value = '6281299998888', status = 'ACTIVE'.
+2. Pasang subscriber pada ActiveMQ Queue jns.anti.fraud.action dan pastikan status READY_AND_LISTENING.
+3. Login sebagai CCO, buka halaman Blocklist, dan eksekusi Unblock pada target id = 9999 dengan alasan: 'False positive complaint verified by SecOps'.
+4. Tangkap payload aktual dari queue ActiveMQ jns.anti.fraud.action.
+5. Lakukan verifikasi exact JSON payload dan status database serta audit log.","BEFORE STATE:
+- Fixture terisolasi: anti_fraud_block_state dengan id = 9999, client_id = 100, scope = 'MSISDN', target_value = '6281299998888', status = 'ACTIVE'.
+- Akun login adalah anggota grup CCO (username: 'cco_user').
+- Subscriber mendengarkan queue ActiveMQ jns.anti.fraud.action.","- Status pada baris id = 9999 di anti_fraud_block_state berubah menjadi 'INACTIVE'.
+- Kolom unblocked_by terisi 'cco_user' dan unblock_reason terisi 'False positive complaint verified by SecOps'.
+- Subscriber ActiveMQ Queue jns.anti.fraud.action menerima pesan dengan payload JSON exact match:
+  {""action"":""UNBLOCK"",""block_id"":9999,""client_id"":100,""scope"":""MSISDN"",""target_value"":""6281299998888"",""unblocked_by"":""cco_user"",""unblock_reason"":""False positive complaint verified by SecOps""}
+- Tabel audit log mencatat action = 'UNBLOCK' dengan target_client_id = 100 dan target_value = '6281299998888'.
+- [LOG CONTRACT]: storage/logs/laravel.log delta mencatat event unblock sukses diproses dan dikirim ke queue.",Eksekusi TC-024 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:33] PASS in 4.39s. All Given/When/Then assertions satisfied.,TEARDOWN: DELETE FROM broadcast.anti_fraud_block_state WHERE id = 9999; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_value = '6281299998888' AND action = 'UNBLOCK';
+TC-025,Memverifikasi penolakan permintaan Unblock jika alasan (unblock_reason) berupa string kosong, spasi, atau karakter tab.,Validasi penolakan aksi Unblock tanpa menyertakan alasan valid (whitespace & empty check).,Mandatory Field Validation - keharusan mengisi alasan pembatalan blokir secara valid.,P1 - High,"1. Pilih target aktif pada baris blocklist dan klik tombol Unblock.
+2. Uji kirim dengan alasan berupa string kosong ("""").
+3. Uji kirim dengan alasan hanya berisi spasi/tab (""   "").
+4. Verifikasi seluruh upaya ditolak dan status database tidak berubah.",Eksekusi TC-025 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:37] PASS in 3.76s. All Given/When/Then assertions satisfied.,Not Executed,,Validasi mandatory field unblock_reason.
+TC-026,Memverifikasi penanganan fail-safe dan jaminan no partial commit pada status database saat broker ActiveMQ mengalami kegagalan koneksi dengan delta log terkontrol.,Verifikasi fail-safe di mana update database dilewati dan dicatat UNBLOCK_FAILED saat koneksi ActiveMQ gagal pada aksi Unblock.,Fault Tolerance & Fail-Safe Protocol - integritas sistem saat ketergantungan antrean eksternal gagal.,P1 - High,"1. Siapkan fixture terisolasi di anti_fraud_block_state: id = 9998, client_id = 100, scope = 'MSISDN', target_value = '6281299998887', status = 'ACTIVE'.
+2. Catat baseline offset file storage/logs/laravel.log.
+3. Simulasikan kegagalan koneksi ke broker ActiveMQ (broker unreachable / port 61616 putus).
+4. Eksekusi Unblock pada target id = 9998 (target_value = '6281299998887') dengan alasan valid: 'Fail-safe network disconnection test'.
+5. Verifikasi bahwa sistem mendeteksi kegagalan publish ($published = false).
+6. Verifikasi pesan alert error pada antarmuka sesuai implementasi controller: 'Unblock was recorded in audit but the Action Queue is unreachable. Please retry.'.
+7. Verifikasi status database baris id = 9998 tetap 'ACTIVE' (no partial commit / update dilewati).
+8. Verifikasi audit log mencatat action = 'UNBLOCK_FAILED' dengan target_value = '6281299998887' dan cause = 'Action Queue unreachable'.
+9. Analisis delta log laravel.log dari baseline offset: verifikasi exception broker tertangkap secara terkontrol dan tidak ada fatal crash 500.","BEFORE STATE:
+- Fixture terisolasi: anti_fraud_block_state id = 9998, client_id = 100, scope = 'MSISDN', target_value = '6281299998887', status = 'ACTIVE'.
+- Koneksi broker ActiveMQ disimulasikan gagal ($published = false).
+- File offset baseline log dicatat.","- Sistem menangkap kegagalan broker dan menampilkan pesan kesalahan: 'Unblock was recorded in audit but the Action Queue is unreachable. Please retry.'.
+- Baris target id = 9998 pada anti_fraud_block_state TETAP berstatus 'ACTIVE' (no partial commit / update dilewati).
+- Kolom unblocked_by dan unblock_reason tetap NULL.
+- Tabel audit log mencatat event kegagalan: action = 'UNBLOCK_FAILED', target_client_id = 100, target_value = '6281299998887'.
+- [LOG CONTRACT]: storage/logs/laravel.log delta memuat penanganan error broker tertangkap ('Action Queue unreachable') dan terbukti ZERO unhandled fatal exception (tidak ada FatalErrorException / HTTP 500 crash).",Eksekusi TC-026 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:43] PASS in 5.30s. All Given/When/Then assertions satisfied.,TEARDOWN: DELETE FROM broadcast.anti_fraud_block_state WHERE id = 9998; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_value = '6281299998887' AND action = 'UNBLOCK_FAILED';
+TC-027,Memverifikasi pencatatan audit trail lengkap untuk seluruh aksi konfigurasi pada fixture independen beserta verifikasi snapshot exact old_value dan new_value.,Verifikasi audit trail konfigurasi secara independen pada fixture Client ID 101 mencakup CONFIG_INSERT, CONFIG_UPDATE, SUBMIT, APPROVE.,Audit Trail Verification - integritas snapshot exact old_value dan new_value audit log konfigurasi.,P1 - High,Eksekusi TC-027 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:28:55] PASS in 12.30s. All Given/When/Then assertions satisfied.,,Not Executed,,TEARDOWN: DELETE FROM broadcast.anti_fraud_config WHERE client_id = 101; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id = 101;
+TC-028,Memverifikasi pencatatan audit trail operasional untuk aksi Whitelist Add, Deactivate, Reactivate, dan Unblock pada fixture independen dengan snapshot komparasi.,Verifikasi audit trail operasional secara independen pada fixture Client ID 102 dengan action terstandarisasi dan snapshot old/new value.,Audit Trail Verification - kelengkapan riwayat audit operasional anti-fraud dengan snapshot.,P2 - Medium,Eksekusi TC-028 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:29:05] PASS in 10.27s. All Given/When/Then assertions satisfied.,,Not Executed,,TEARDOWN: DELETE FROM broadcast.anti_fraud_msisdn_whitelist WHERE client_id = 102; DELETE FROM broadcast.anti_fraud_block_state WHERE id = 9996; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id = 102;
+TC-029,Memverifikasi kemampuan Super Tenant (JATIS client_id = 3) melihat dan mengelola secara operasional konfigurasi dan whitelist milik client lain.,Verifikasi kemampuan akses menyeluruh multi-client bagi pengguna Super Tenant JATIS mencakup visibilitas dan pengelolaan operasional nyata.,Multi-Tenant Scoping - otorisasi Super Tenant melihat dan mengelola data client lain secara global.,P0 - Critical,"1. Login sebagai pengguna dengan asosiasi client_id = 3 (JATIS).
+2. Buka halaman Client Config: verifikasi dropdown menampilkan seluruh client dan tabel memuat konfigurasi berbagai client (Client 3, 10, 20).
+3. Lakukan aksi manajemen 1: Buka modal Edit konfigurasi milik Client ID 10, ubah alert_emails menjadi 'supertenant_managed@jatismobile.com', lalu klik Save.
+4. Lakukan aksi manajemen 2: Buka halaman Whitelist, tambahkan entri whitelist MSISDN untuk Client ID 10 ('6281299996666'), lalu simpan.
+5. Lakukan aksi manajemen 3: Lakukan Deactivate pada entri whitelist Client ID 10 tersebut.
+6. Verifikasi keberhasilan seluruh operasi pengelolaan di database.","BEFORE STATE:
+- Akun login terasosiasi dengan client JATIS (client_id = 3).
+- Tersedia konfigurasi berstatus DRAFT milik Client ID 10 di database.","- Super Tenant dapat melihat data seluruh client di DataTables tanpa batasan filter.
+- Aksi Manajemen 1: Konfigurasi Client ID 10 berhasil terupdate di database dengan alert_emails = 'supertenant_managed@jatismobile.com'.
+- Aksi Manajemen 2: Entri whitelist untuk Client ID 10 ('6281299996666') berhasil tersimpan di tabel anti_fraud_msisdn_whitelist.
+- Aksi Manajemen 3: Status whitelist Client ID 10 berhasil diubah menjadi is_active = 0.
+- Audit log mencatat username Super Tenant sebagai actor dengan target_client_id = 10.
+- Terbukti Super Tenant memiliki kemampuan penuh melihat DAN mengelola data client lain.
+- [LOG CONTRACT]: storage/logs/laravel.log delta bebas dari local.ERROR.",Eksekusi TC-029 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:29:11] PASS in 5.87s. All Given/When/Then assertions satisfied.,TEARDOWN: DELETE FROM broadcast.anti_fraud_msisdn_whitelist WHERE client_id = 10 AND msisdn_e164 = '6281299996666'; DELETE FROM broadcast.anti_fraud_config_audit_log WHERE target_client_id = 10 AND target_value = '6281299996666';
+TC-030,Memverifikasi isolasi data multi-tenant di mana non-JATIS terisolasi pada setiap endpoint spesifik dan parameter tampering ditolak tanpa kebocoran data.,Verifikasi isolasi data pengguna non-JATIS pada masing-masing endpoint DataTables AJAX dan penolakan form POST manipulasi tanpa data leakage.,Multi-Tenant Isolation - pencegahan kebocoran data antar client pada response body per-endpoint dan verifikasi integritas database.,P0 - Critical,"1. Login sebagai pengguna dengan asosiasi client non-JATIS (Client ID 10).
+2. Endpoint 1 (Config DataTables): Kirim GET /antifraud/config/datatable dengan tampered parameter client_id = 20 -> Verifikasi response.
+3. Endpoint 2 (Whitelist DataTables): Kirim GET /antifraud/whitelist/datatable dengan tampered parameter client_id = 20 -> Verifikasi response.
+4. Endpoint 3 (Blocklist DataTables): Kirim GET /antifraud/blocks/datatable dengan tampered parameter client_id = 20 -> Verifikasi response.
+5. Endpoint 4 (Audit DataTables): Kirim GET /antifraud/audit/datatable dengan tampered parameter client_id = 20 -> Verifikasi response.
+6. Endpoint 5 (Direct Form POST Config): Kirim POST ke /antifraud/config/insert membawa payload client_id = 20 -> Verifikasi penolakan.
+7. Endpoint 6 (Direct Form POST Whitelist): Kirim POST ke /antifraud/whitelist/postinsert membawa payload client_id = 20 -> Verifikasi penolakan.
+8. Verifikasi kondisi database: pastikan tidak ada baris konfigurasi atau whitelist baru untuk Client ID 20.","BEFORE STATE:
+- Akun login terasosiasi khusus dengan Client ID 10 (Non-JATIS).
+- Database memuat data aktif terverifikasi milik Client ID 10 (minimal 1 baris per modul) dan data rahasia milik Client ID 20.","- Endpoint 1 s/d 4 (DataTables AJAX): Seluruh response berstatus HTTP 200 dan payload JSON terbukti memuat data Client ID 10 yang memang tersedia (recordsTotal > 0 dan recordsFiltered > 0, response kosong DILARANG dianggap PASS).
+- Tiap record di dalam array data terverifikasi secara ketat memiliki client_id = 10.
+- Data milik Client ID 20 terbukti 100% TIDAK MUNCUL (0 kemunculan string 'Client 20' atau 'client_id: 20' pada seluruh body response).
+- Endpoint 5 (POST Config): Ditolak oleh guard dengan pesan flash alert: 'Anda tidak memiliki akses ke client ini'.
+- Endpoint 6 (POST Whitelist): Ditolak oleh guard dengan pesan flash alert: 'Tidak berhak mengubah whitelist client lain'.
+- Kondisi Database: Tabel anti_fraud_config dan anti_fraud_msisdn_whitelist terbukti TIDAK MENGALAMI PERUBAHAN untuk Client ID 20 (0 baris baru).
+- Terbukti ZERO DATA LEAKAGE dan integritas isolasi multi-tenant terjaga 100%.
+- [LOG CONTRACT]: storage/logs/laravel.log delta tidak mencatat data leakage dan bebas dari unhandled exception.",Eksekusi TC-030 berhasil sesuai skenario dan seluruh asersi valid.,PASS,[2026-11-17 10:29:17] PASS in 6.42s. All Given/When/Then assertions satisfied.,"Sensitivitas mutasi: jika data Client ID 20 bocor atau response kosong diloloskan, test WAJIB FAIL."

@@ -1,0 +1,46 @@
+sut:
+  name: "mobilebroadcast"
+  component: "JNS7 Web CMS"
+  ticket: "PB082643640012YA"
+  baseline_version: "commit 401eb27"
+  target_version: "commit f14cb8a (branch SIT)"
+  framework: "Laravel 5.2 (PHP 7.1.33)"
+  web_server: "Apache 2.4.33 Prefork"
+  runtime_url: "http://192.168.181.60/mobilebroadcast/"
+
+logging:
+  app_log:
+    path: "storage/logs/laravel.log"
+    remote_path: "/var/www/html/mobilebroadcast/storage/logs/laravel.log"
+    format: "Monolog"
+    timestamp_regex: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
+    line_prefix_regex: '^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\]'
+    info_regex: '^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] \w+\.INFO:'
+    warning_regex: '^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] \w+\.WARNING:'
+    error_regex: '^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\] \w+\.ERROR:'
+    exception_regex: '(Stack trace:|Fatal error:|Exception:|PDOException:|ErrorException:)'
+  server_log:
+    path: "/var/log/httpd/error_log"
+    format: "Apache Error Log"
+    timestamp_regex: '^\[[A-Z][a-z]{2} [A-Z][a-z]{2} \d{2} \d{2}:\d{2}:\d{2}\.\d+ \d{4}\]'
+    error_regex: '\[php7:error\]|\[core:error\]'
+  settle_time: 0.5
+
+dependencies:
+  database_primary:
+    connection: "mysql"
+    database: "web_jns7 / new_mobilebroadcast"
+    host: "192.168.181.63:3306"
+    scope: "menus, parent_menus, groups, access_controls, users, clients"
+  database_secondary:
+    connection: "broadcast"
+    database: "broadcast"
+    host: "192.168.181.63:3306"
+    scope: "anti_fraud_config, anti_fraud_config_audit_log, anti_fraud_msisdn_whitelist, anti_fraud_prefix_whitelist, anti_fraud_block_state"
+  message_broker:
+    type: "ActiveMQ Classic"
+    host: "192.168.181.51:61613"
+    topic_command: "jns.topic.command"
+    topic_command_payload: "reload anti-fraud"
+    queue_action: "jns.anti.fraud.action"
+    queue_action_format: "JSON"

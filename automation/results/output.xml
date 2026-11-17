@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.2 (Python 3.14.10 on linux)" generated="2026-11-16T15:25:56.213781" rpa="false" schemaversion="5">
+<suite id="s1" name="TC AF 001 AntiFraud Client Config Journey" source="/home/gunawan/Jamob/2026/PB082643640012YA/mobilebroadcast/tests/e2e/TC_AF_001_AntiFraud_Client_Config_Journey.robot">
+<test id="s1-t1" name="TC-AF-E2E-001 Akses Portal Dan Konfigurasi Anti Fraud Client Config Melalui Browser E2E" line="10">
+<kw name="Inisialisasi Browser Dan Siapkan Spotlight HUD Runner" owner="anti_fraud_journey_keywords" type="SETUP">
+<kw name="Inisialisasi Browser Dan Siapkan Spotlight Hud Runner" owner="AntiFraudJourneyLibrary">
+<msg time="2026-11-16T15:25:56.366932" level="INFO">[INIT] Meluncurkan browser Chromium untuk Anti-Fraud E2E Journey (HEADED (LIVE WATCH))...</msg>
+<msg time="2026-11-16T15:25:57.628222" level="INFO">[INIT] Browser dan Injected HUD Overlay siap di http://192.168.181.60/mobilebroadcast/</msg>
+<status status="PASS" start="2026-11-16T15:25:56.366731" elapsed="1.261718"/>
+</kw>
+<status status="PASS" start="2026-11-16T15:25:56.366196" elapsed="1.262503"/>
+</kw>
+<kw name="Given Pengguna Berada Pada Halaman Login Portal JNS7 Mobile Broadcast" owner="anti_fraud_journey_keywords">
+<kw name="Buka Halaman Login Portal Jns" owner="AntiFraudJourneyLibrary">
+<msg time="2026-11-16T15:26:01.288340" level="INFO">[STEP 1 GIVEN] Halaman login termuat: rf_01_given_portal_login.png</msg>
+<msg time="2026-11-16T15:26:02.288808" level="INFO">[SNAPSHOT] Saved: rf_01_given_portal_login.png</msg>
+<status status="PASS" start="2026-11-16T15:25:57.630385" elapsed="4.658795"/>
+</kw>
+<status status="PASS" start="2026-11-16T15:25:57.629464" elapsed="4.660035"/>
+</kw>
+<kw name="When Pengguna Melakukan Autentikasi Menggunakan Akun Super Admin" owner="anti_fraud_journey_keywords">
+<kw name="Autentikasi Menggunakan Akun Super Admin" owner="AntiFraudJourneyLibrary">
+<msg time="2026-11-16T15:26:05.736828" level="INFO">[STEP 2 WHEN] Kredensial diisi: rf_02_when_credentials_filled.png</msg>
+<msg time="2026-11-16T15:26:08.093491" level="INFO">[SNAPSHOT] Saved: rf_02_when_credentials_filled.png</msg>
+<status status="PASS" start="2026-11-16T15:26:02.292111" elapsed="5.801522"/>
+</kw>
+<status status="PASS" start="2026-11-16T15:26:02.290761" elapsed="5.803048"/>
+</kw>
+<kw name="Then Dashboard Utama JNS7 Berhasil Dimuat Dengan Sesi Pengguna Aktif" owner="anti_fraud_journey_keywords">
+<kw name="Verifikasi Dashboard Utama Dan Sesi Aktif" owner="AntiFraudJourneyLibrary">
+<msg time="2026-11-16T15:26:09.381415" level="INFO">[STEP 3 THEN] Dashboard terverifikasi: rf_03_then_dashboard_active.png</msg>
+<msg time="2026-11-16T15:26:09.381777" level="INFO">[SNAPSHOT] Saved: rf_03_then_dashboard_active.png</msg>
+<status status="PASS" start="2026-11-16T15:26:08.094813" elapsed="1.287291"/>
+</kw>
+<status status="PASS" start="2026-11-16T15:26:08.094268" elapsed="1.288174"/>
+</kw>
+<kw name="And Pengguna Membuka Menu Sidebar Anti Fraud Menuju Submenu Client Config" owner="anti_fraud_journey_keywords">
+<kw name="Navigasi Sidebar Anti Fraud Ke Client Config" owner="AntiFraudJourneyLibrary">
+<msg time="2026-11-16T15:26:12.289265" level="INFO">[STEP 4 AND] Menu Anti Fraud terbuka: rf_04_and_sidebar_antifraud_selected.png</msg>
+<msg time="2026-11-16T15:26:13.700056" level="INFO">[SNAPSHOT] Saved: rf_04_and_sidebar_antifraud_selected.png</msg>
+<status status="PASS" start="2026-11-16T15:26:09.385199" elapsed="4.315003"/>
+</kw>
+<status status="PASS" start="2026-11-16T15:26:09.383566" elapsed="4.316788"/>
+</kw>
+<kw name="Then Halaman Konfigurasi Anti Fraud Menampilkan Tombol Tambah Dan Tabel Data" owner="anti_fraud_journey_keywords">
+<kw name="Verifikasi Halaman Anti Fraud Config Dan Tombol" owner="AntiFraudJourneyLibrary">
+<msg time="2026-11-16T15:26:14.831693" level="INFO">[STEP 5 THEN] Halaman Anti Fraud Config siap: rf_05_then_config_page_ready.png</msg>
+<msg time="2026-11-16T15:26:14.831878" level="INFO">[SNAPSHOT] Saved: rf_05_then_config_page_ready.png</msg>
+<status status="PASS" start="2026-11-16T15:26:13.701671" elapsed="1.130347"/>
+</kw>
+<status status="PASS" start="2026-11-16T15:26:13.700926" elapsed="1.131258"/>
+</kw>
+<kw name="And Pengguna Membuka Modal Tambah Konfigurasi Dan Memvalidasi Form Isian" owner="anti_fraud_journey_keywords">
+<kw name="Buka Modal Add Config Dan Validasi Form" owner="AntiFraudJourneyLibrary">
+<msg time="2026-11-16T15:26:17.711572" level="INFO">[STEP 6 AND] Modal Anti-Fraud tervalidasi: rf_06_and_modal_form_verified.png, rf_07_final_success.png</msg>
+<msg time="2026-11-16T15:26:17.711710" level="INFO">[SNAPSHOT] Saved: rf_06_and_modal_form_verified.png
+  [SNAPSHOT] Saved: rf_07_final_success.png</msg>
+<status status="PASS" start="2026-11-16T15:26:14.833635" elapsed="2.878201"/>
+</kw>
+<status status="PASS" start="2026-11-16T15:26:14.832777" elapsed="2.879287"/>
+</kw>
+<kw name="Tutup Browser Dan Kuras Log Audit E2E" owner="anti_fraud_journey_keywords" type="TEARDOWN">
+<kw name="Tutup Browser Dan Kuras Log Audit" owner="AntiFraudJourneyLibrary">
+<msg time="2026-11-16T15:26:17.714577" level="INFO">[TEARDOWN] Menutup browser dan menyelesaikan sesi pengujian E2E...</msg>
+<msg time="2026-11-16T15:26:17.714674" level="INFO">[TEARDOWN] Mode Headed: Menahan jendela browser 4 detik sebelum ditutup...</msg>
+<msg time="2026-11-16T15:26:22.079868" level="INFO">[TEARDOWN] Selesai.</msg>
+<status status="PASS" start="2026-11-16T15:26:17.714200" elapsed="4.365905"/>
+</kw>
+<status status="PASS" start="2026-11-16T15:26:17.713067" elapsed="4.367193"/>
+</kw>
+<tag>antifraud</tag>
+<tag>cms</tag>
+<tag>e2e</tag>
+<tag>P0</tag>
+<tag>smoke</tag>
+<tag>TC-AF-E2E-001</tag>
+<status status="PASS" start="2026-11-16T15:25:56.364753" elapsed="25.715689"/>
+</test>
+<doc>E2E Journey Verification untuk Anti-Fraud CMS Client Config
+Menerapkan Browser E2E Journey Automation dengan Injected HUD Overlay &amp; Spotlight Runner
+Sesuai Global QA SDET &amp; Robot Framework Constitution (Clean BDD Murni)</doc>
+<status status="PASS" start="2026-11-16T15:25:56.215386" elapsed="25.866356"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0" skip="0">antifraud</stat>
+<stat pass="1" fail="0" skip="0">cms</stat>
+<stat pass="1" fail="0" skip="0">e2e</stat>
+<stat pass="1" fail="0" skip="0">P0</stat>
+<stat pass="1" fail="0" skip="0">smoke</stat>
+<stat pass="1" fail="0" skip="0">TC-AF-E2E-001</stat>
+</tag>
+<suite>
+<stat name="TC AF 001 AntiFraud Client Config Journey" id="s1" pass="1" fail="0" skip="0">TC AF 001 AntiFraud Client Config Journey</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
