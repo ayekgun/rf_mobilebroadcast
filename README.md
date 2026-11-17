@@ -144,8 +144,21 @@ cd rf_mobilebroadcast
 
 ---
 
-### 5. POC Spotlight & HUD Interactive Demo
-Menjalankan demo interaktif Playwright 7 langkah lengkap dengan overlay HUD visual spotlight:
+### 5. Injected DOM Spotlight Box Overlay & HUD (Live Visual Monitoring)
+Suite ini dilengkapi dengan teknologi **Injected DOM Spotlight Box Overlay & HUD** yang aktif secara otomatis pada seluruh 30 Test Case (TC-001 s/d TC-030) saat dijalankan dalam mode **Headed** (`./scripts/run_headed.sh` atau `HEADED=1`).
+
+#### Fitur Visual HUD & Spotlight:
+- **Top HUD Bar**: Menampilkan ID Test Case (`TC-xxx`), BDD Phase Badge (`GIVEN`, `WHEN`, `THEN`, `AND`), Judul Aksi, Rincian Langkah, dan Status (`RUNNING` / `PASSED`).
+- **Neon Cyan Spotlight Box**: Kotak beranimasi cyan dengan efek *shadow scrim mask* (`box-shadow: 0 0 0 9999px rgba(...)`) yang menyorot dan menandai secara presisi setiap elemen aktif:
+  - Form field (input username, password, email alert, threshold, reason unblock)
+  - Dropdown selector (pilihan client ID, tipe whitelist MSISDN/Prefix)
+  - Tombol aksi (Submit, Approve, Reject, Deactivate, Reopen, SYNC, Tambah Whitelist, Toggle, Unblock)
+  - Baris DataTables dan status badge
+  - Banner alert validasi dan penolakan
+- **Human-Observable Pacing**: Penundaan visual terukur (~0.35s) di mode headed sehingga pengguna dapat memantau jalannya pengujian dan asersi secara *real-time*.
+- **Zero Overhead di Mode Headless**: Di mode default CI-CD (`HEADED=0`), visual delay di-bypass (`0.0s`) sehingga eksekusi suite penuh tetap berjalan secepat kilat.
+
+Untuk mencoba demo spotlight interaktif 7-langkah:
 ```bash
 ./rf_mobilebroadcast/run_poc_journey.sh
 ```

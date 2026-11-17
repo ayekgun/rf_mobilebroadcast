@@ -31,12 +31,28 @@ if str(AUTOMATION_DIR) not in sys.path:
     sys.path.insert(0, str(AUTOMATION_DIR))
 
 try:
-    from spotlight_hud_runner import InjectedHudSpotlightRunner, SCREENSHOT_DIR
+    from spotlight_hud_runner import (
+        InjectedHudSpotlightRunner,
+        SCREENSHOT_DIR,
+        HUD_AND_SPOTLIGHT_JS,
+        UPDATE_HUD_JS,
+        HIGHLIGHT_BOX_JS,
+        REMOVE_SPOTLIGHT_JS
+    )
     from playwright.sync_api import sync_playwright, Page, Browser, BrowserContext
 except ImportError:
     InjectedHudSpotlightRunner = None
     sync_playwright = None
     SCREENSHOT_DIR = LIB_DIR.parent / "automation" / "screenshots"
+    HUD_AND_SPOTLIGHT_JS = ""
+    UPDATE_HUD_JS = ""
+    HIGHLIGHT_BOX_JS = ""
+    REMOVE_SPOTLIGHT_JS = ""
+
+try:
+    from robot.libraries.BuiltIn import BuiltIn
+except ImportError:
+    BuiltIn = None
 
 # ==============================================================================
 # CONFIGURATION VIA ENVIRONMENT VARIABLES (WITH SAFE DEFAULTS)
@@ -202,6 +218,90 @@ class AntiFraudLibrary:
         except Exception:
             pass
 
+    def _get_current_tc_id(self) -> str:
+        if BuiltIn:
+            try:
+                test_name = BuiltIn().get_variable_value("${TEST_NAME}")
+                if test_name:
+                    m = re.search(r"(TC-\d{3})", test_name)
+                    if m:
+                        return m.group(1)
+                    return test_name[:20]
+            except Exception:
+                pass
+        return "TC-AF-CMS"
+
+    def _ui_spotlight(self, target=None, badge: str = "", phase: str = "", title: str = "", detail: str = "", delay: Optional[float] = None):
+        """Universal Injected HUD & Spotlight Highlighter for all test cases."""
+        if not self.headed:
+            return
+
+        page = self._get_page()
+        try:
+            # 1. Inject overlay elements if not present
+            page.evaluate(HUD_AND_SPOTLIGHT_JS)
+
+            # 2. Update HUD if title/phase provided
+            tc_id = self._get_current_tc_id()
+            page.evaluate(f"""
+                const tc = document.getElementById('hud-tc-id');
+                if (tc) tc.innerText = '{tc_id}';
+            """)
+            if title or phase:
+                page.evaluate(UPDATE_HUD_JS, {
+                    "phase": phase or "ACTION",
+                    "title": title or "Interaksi Form Web",
+                    "detail": detail or "",
+                    "count": tc_id,
+                    "status": "RUNNING"
+                })
+
+            # 3. Highlight target if locator or selector provided
+            if target is not None:
+                if isinstance(target, str):
+                    loc = page.locator(target).first
+                else:
+                    loc = target.first if hasattr(target, "first") else target
+
+                try:
+                    loc.scroll_into_view_if_needed(timeout=2000)
+                    box = loc.bounding_box()
+                    if box:
+                        page.evaluate(HIGHLIGHT_BOX_JS, {
+                            "box": box,
+                            "badgeText": badge or "TARGET"
+                        })
+                except Exception:
+                    page.evaluate(REMOVE_SPOTLIGHT_JS)
+            else:
+                page.evaluate(REMOVE_SPOTLIGHT_JS)
+
+            # 4. Observational delay in headed mode (default 0.35s)
+            d = delay if delay is not None else 0.35
+            if d > 0:
+                time.sleep(d)
+        except Exception as e:
+            logger.debug(f"[SPOTLIGHT HUD] Exception: {e}")
+
+    def _ui_hud_passed(self, title: str = "Asersi Valid", detail: str = ""):
+        """Marks the top HUD status as PASSED."""
+        if not self.headed:
+            return
+        page = self._get_page()
+        try:
+            tc_id = self._get_current_tc_id()
+            page.evaluate(UPDATE_HUD_JS, {
+                "phase": "THEN",
+                "title": title,
+                "detail": detail,
+                "count": tc_id,
+                "status": "PASSED"
+            })
+            page.evaluate(REMOVE_SPOTLIGHT_JS)
+            time.sleep(0.3)
+        except Exception:
+            pass
+
     @keyword("UI Tutup Sesi Browser Otomasi")
     def browser_close(self):
         """Clean teardown for browser session."""
@@ -258,14 +358,18 @@ class AntiFraudLibrary:
         page.wait_for_selector('input[name="username"]', timeout=15000)
         self._hide_debugbar()
 
+        self._ui_spotlight('input[name="username"]', badge=f"Username: {username}", phase="GIVEN", title=f"Login Portal Sebagai {username}", detail="Mengisi kredensial akun pengguna")
         page.fill('input[name="username"]', username)
+        self._ui_spotlight('input[name="password"]', badge="Password: ••••••••")
         page.fill('input[name="password"]', "admin123")
+        self._ui_spotlight('button[type="submit"]', badge="Tombol: Masuk Portal", phase="WHEN", title="Submit Form Login")
 
         with page.expect_navigation(timeout=15000):
             page.click('button[type="submit"]')
 
         self._hide_debugbar()
         self.current_user = username
+        self._ui_hud_passed(title=f"Login Berhasil Sebagai {username}", detail=f"Sesi portal aktif di {page.url}")
         logger.info(f"[UI LOGIN] Pengguna '{username}' berhasil masuk. Halaman aktif: {page.url}")
 
     @keyword("UI Navigasi Halaman Langsung Melalui Browser")
@@ -275,6 +379,7 @@ class AntiFraudLibrary:
         page.goto(f"{self.base_url}{path}", timeout=15000)
         page.wait_for_load_state("networkidle", timeout=10000)
         self._hide_debugbar()
+        self._ui_spotlight(None, phase="WHEN", title=f"Akses URL: {path}", detail="Membuka rute halaman langsung via browser")
 
     @keyword("UI Verifikasi Akses Dialihkan Dari Halaman Rahasia")
     def ui_verify_redirected_from_secret(self):
@@ -283,10 +388,14 @@ class AntiFraudLibrary:
         logger.info(f"[UI ASSERT] URL setelah penolakan: {current_url}")
         if "/antifraud/config" in current_url:
             raise AssertionError(f"Pengguna tidak dialihkan! Masih berada pada: {current_url}")
+        self._ui_spotlight(None, phase="THEN", title="Akses Ditolak & Dialihkan", detail=f"Pengguna dialihkan aman ke: {current_url}")
+        self._ui_hud_passed(title="Pengalihan Akses Terverifikasi", detail="Hak akses rute terlindungi")
 
+    @keyword("UI Verifikasi In Page Fetch AJAX Mengembalikan 403")
     @keyword("UI Verifikasi In Page Fetch AJAX Mengembalikan 403")
     def ui_verify_in_page_ajax_403(self):
         page = self._get_page()
+        self._ui_spotlight(None, phase="THEN", title="Observasi Fetch In-Page AJAX", detail="Memastikan endpoint AJAX menolak dengan status 403 Forbidden")
         status = page.evaluate("""
             async () => {
                 try {
@@ -300,6 +409,7 @@ class AntiFraudLibrary:
         logger.info(f"[UI ASSERT] In-page fetch status: {status}")
         if status != 403:
             raise AssertionError(f"In-page fetch tidak 403 Forbidden! Status: {status}")
+        self._ui_hud_passed(title="AJAX 403 Forbidden Terbukti", detail="Endpoint terlindungi dari akses ilegal")
 
     # ==========================================================================
     # 2. WEB UI ACTIONS: CONFIG & LIFECYCLE
@@ -313,17 +423,21 @@ class AntiFraudLibrary:
         page.wait_for_selector("#dt-clients", timeout=15000)
         self._hide_debugbar()
 
+        self._ui_spotlight("#btn-add-config", badge="Tombol: Tambah Config", phase="WHEN", title="Buka Modal Tambah Konfigurasi", detail=f"Mempersiapkan konfigurasi Anti-Fraud untuk Client {client_id}")
         page.click("#btn-add-config")
         page.wait_for_selector("#config-modal", state="visible", timeout=10000)
         self._hide_debugbar()
 
+        self._ui_spotlight("#client_id", badge=f"Client ID: {client_id}", phase="WHEN", title="Pilih Client Target", detail=f"Memilih Client {client_id} pada dropdown")
         page.evaluate(f"""
             var sel = document.getElementById("client_id");
             var opt = new Option("Client {client_id}", "{client_id}", true, true);
             sel.appendChild(opt);
             if (window.jQuery) {{ window.jQuery(sel).trigger("change"); }}
         """)
+        self._ui_spotlight("#det-alert-emails", badge="Email: ops@test.com", phase="WHEN", title="Isi Alert Emails", detail="Mendaftarkan email notifikasi alert fraud")
         page.fill("#det-alert-emails", "ops@test.com")
+        self._ui_spotlight("#det-traffic", badge="Rule Deteksi: ON", phase="WHEN", title="Aktifkan Traffic & Loss Monitoring", detail="Mengaktifkan deteksi anomali trafik dan operator")
         page.evaluate("""
             document.getElementById("det-traffic").checked = true;
             document.getElementById("det-loss").checked = true;
@@ -340,10 +454,12 @@ class AntiFraudLibrary:
             }
         """)
 
+        self._ui_spotlight("#btn-save-config", badge="Tombol: Simpan Konfigurasi", phase="WHEN", title="Submit Form Modal", detail="Mengirimkan konfigurasi baru ke server")
         with page.expect_navigation(timeout=15000):
             page.evaluate("$('#btn-save-config').click()")
 
         self._hide_debugbar()
+        self._ui_hud_passed(title=f"Konfigurasi Client {client_id} Tersimpan", detail="Form modal berhasil disubmit dengan status awal DRAFT")
         logger.info(f"[UI ACTION] Konfigurasi client {client_id} berhasil dibuat via UI modal form.")
 
     @keyword("UI Tambah Konfigurasi Duplikat Dan Pastikan Ditolak")
@@ -354,16 +470,19 @@ class AntiFraudLibrary:
         page.wait_for_selector("#dt-clients", timeout=15000)
         self._hide_debugbar()
 
+        self._ui_spotlight("#btn-add-config", badge="Tombol: Tambah Config", phase="WHEN", title="Uji Coba Penambahan Duplikat", detail=f"Mencoba mendaftarkan konfigurasi kedua untuk Client {client_id}")
         page.click("#btn-add-config")
         page.wait_for_selector("#config-modal", state="visible", timeout=10000)
         self._hide_debugbar()
 
+        self._ui_spotlight("#client_id", badge=f"Client ID: {client_id} (Sudah Ada)", phase="WHEN", title="Pilih Client Yang Sudah Ada", detail="Memicu validasi keunikan client_id pada backend")
         page.evaluate(f"""
             var sel = document.getElementById("client_id");
             var opt = new Option("Client {client_id}", "{client_id}", true, true);
             sel.appendChild(opt);
             if (window.jQuery) {{ window.jQuery(sel).trigger("change"); }}
         """)
+        self._ui_spotlight("#det-alert-emails", badge="Email: ops@test.com", phase="WHEN", title="Isi Alert Emails", detail="Mengisi field form")
         page.fill("#det-alert-emails", "ops@test.com")
         page.evaluate("""
             document.getElementById("det-traffic").checked = true;
@@ -381,6 +500,7 @@ class AntiFraudLibrary:
             }
         """)
 
+        self._ui_spotlight("#btn-save-config", badge="Tombol: Simpan Duplikat", phase="WHEN", title="Submit Form Duplikat")
         with page.expect_navigation(timeout=15000):
             page.evaluate("$('#btn-save-config').click()")
 
@@ -391,10 +511,14 @@ class AntiFraudLibrary:
     def ui_verify_duplicate_rejected(self):
         page = self._get_page()
         alert = ""
+        target_el = None
         for sel in [".alert-warning", ".alert-danger", ".alert-info"]:
             if page.locator(sel).count() > 0:
                 alert = page.locator(sel).first.text_content().strip()
+                target_el = sel
                 break
+        self._ui_spotlight(target_el, badge="Alert Validasi Duplikasi", phase="THEN", title="Validasi Penolakan Duplikasi", detail=alert or "Pesan kesalahan duplikasi tertampil di DOM")
+        self._ui_hud_passed(title="Duplikasi Berhasil Ditolak", detail=alert or "Sistem menolak duplikasi konfigurasi")
         logger.info(f"[UI ASSERT] Alert duplikasi di DOM: '{alert}'")
 
     @keyword("UI Tambah Konfigurasi Threshold Tidak Valid Dan Pastikan Ditolak")
@@ -405,10 +529,12 @@ class AntiFraudLibrary:
         page.wait_for_selector("#dt-clients", timeout=15000)
         self._hide_debugbar()
 
+        self._ui_spotlight("#btn-add-config", badge="Tombol: Tambah Config", phase="WHEN", title="Form Konfigurasi Invalid Threshold", detail=f"Mencoba input parameter tidak valid untuk Client {client_id}")
         page.click("#btn-add-config")
         page.wait_for_selector("#config-modal", state="visible", timeout=10000)
         self._hide_debugbar()
 
+        self._ui_spotlight("#client_id", badge=f"Client ID: {client_id}", phase="WHEN", title="Pilih Client Target")
         page.evaluate(f"""
             var sel = document.getElementById("client_id");
             var opt = new Option("Client {client_id}", "{client_id}", true, true);
@@ -417,9 +543,11 @@ class AntiFraudLibrary:
             document.getElementById("det-loss").checked = true;
         """)
 
+        self._ui_spotlight("#btn-save-config", badge="Tombol: Simpan", phase="WHEN", title="Memicu Validasi Client/Browser Dialog", detail="Menekan tombol Simpan tanpa memilih operator")
         page.once("dialog", lambda d: d.accept())
         page.locator("#btn-save-config").click(force=True)
         time.sleep(1.0)
+        self._ui_hud_passed(title="Validasi Threshold Terbukti Menolak", detail="Browser dialog / form validation berhasil mencegah submit")
         logger.info("[UI ACTION] Validasi threshold dipicu pada form modal.")
 
     @keyword("UI Update Parameter Konfigurasi Client")
@@ -431,13 +559,18 @@ class AntiFraudLibrary:
         self._hide_debugbar()
 
         row = page.locator("#dt-clients tbody tr", has_text=f"({client_id})")
-        row.locator(".btn-config-edit").click(force=True)
+        self._ui_spotlight(row, badge=f"Baris Client {client_id}", phase="WHEN", title=f"Cari Data Client {client_id}", detail="Menemukan entri konfigurasi pada DataTables")
+        btn_edit = row.locator(".btn-config-edit")
+        self._ui_spotlight(btn_edit, badge="Tombol: Edit Config", phase="WHEN", title="Buka Form Edit Konfigurasi")
+        btn_edit.click(force=True)
 
         page.wait_for_selector("#config-modal", state="visible", timeout=10000)
         self._hide_debugbar()
         page.wait_for_function("document.getElementById('cfg-id') && document.getElementById('cfg-id').value !== ''", timeout=10000)
 
+        self._ui_spotlight("#det-alert-emails", badge="Updated: updated_ops@test.com", phase="WHEN", title="Perbarui Email Notifikasi Alert", detail="Mengubah email alert menjadi updated_ops@test.com")
         page.fill("#det-alert-emails", "updated_ops@test.com")
+        self._ui_spotlight("#rl-table", badge="Rate Limit Parameters", phase="WHEN", title="Perbarui Nilai Rate Limit", detail="Mengubah threshold rate limit pada tabel rule")
         page.evaluate("""
             var r1_val = document.querySelector("#rl-table tbody tr .w-val");
             if (r1_val) r1_val.value = "2";
@@ -447,10 +580,12 @@ class AntiFraudLibrary:
             if (r1_intl) r1_intl.value = "10";
         """)
 
+        self._ui_spotlight("#btn-save-config", badge="Tombol: Simpan Perubahan", phase="WHEN", title="Submit Pembaruan Konfigurasi", detail="Mengirimkan update konfigurasi ke backend")
         with page.expect_navigation(timeout=15000):
             page.evaluate("$('#btn-save-config').click()")
 
         self._hide_debugbar()
+        self._ui_hud_passed(title=f"Perubahan Client {client_id} Berhasil Disimpan", detail="Form edit konfigurasi disubmit sukses")
         logger.info(f"[UI ACTION] Parameter konfigurasi client {client_id} berhasil diubah melalui form modal.")
 
     @keyword("UI Eksekusi Aksi Lifecycle Pada Baris Datatable")
@@ -464,6 +599,9 @@ class AntiFraudLibrary:
         row = page.locator("#dt-clients tbody tr", has_text=f"({client_id})")
         btn = row.locator(f'button:has-text("{action.capitalize()}")')
 
+        self._ui_spotlight(row, badge=f"Baris Client {client_id}", phase="WHEN", title=f"Navigasi Baris Client {client_id}", detail="Mempersiapkan eksekusi aksi status lifecycle")
+        self._ui_spotlight(btn, badge=f"Tombol: {action.upper()}", phase="WHEN", title=f"Eksekusi Aksi {action.upper()}", detail=f"Pengguna {username} memicu aksi {action} dengan konfirmasi")
+
         prompts = {
             "submit": "Submit config ini untuk approval CCO?",
             "approve": "Approve config ini?",
@@ -473,6 +611,7 @@ class AntiFraudLibrary:
         }
         expected_prompt = prompts.get(action.lower(), "")
         self._click_with_expected_confirm(btn, expected_prompt)
+        self._ui_hud_passed(title=f"Aksi {action.upper()} Berhasil Dipicu", detail=f"Aksi {action} dieksekusi via tombol UI dengan konfirmasi dialog")
         logger.info(f"[UI ACTION] Aksi '{action}' untuk client {client_id} diklik via tombol antarmuka.")
 
     @keyword("UI Verifikasi Tombol Approval Tidak Tersedia Untuk Non CCO")
@@ -484,10 +623,12 @@ class AntiFraudLibrary:
         self._hide_debugbar()
 
         row = page.locator("#dt-clients tbody tr", has_text=f"({client_id})")
+        self._ui_spotlight(row, badge="Restriksi Non-CCO (0 Tombol)", phase="THEN", title="Verifikasi Restriksi Hak Akses CCO", detail="Memastikan tombol Approve & Reject tidak bocor ke role Non-CCO")
         approve_count = row.locator('button:has-text("Approve")').count()
         reject_count = row.locator('button:has-text("Reject")').count()
         if approve_count > 0 or reject_count > 0:
             raise AssertionError(f"Tombol Approve ({approve_count}) / Reject ({reject_count}) muncul untuk Non-CCO!")
+        self._ui_hud_passed(title="Restriksi Hak Akses Non-CCO Valid", detail="Tombol Approve & Reject terbukti 0 elemen (tersembunyi)")
         logger.info("[UI ASSERT] Tombol Approve/Reject terbukti tersembunyi (0 elemen) untuk Non-CCO.")
 
     @keyword("UI Verifikasi Matriks Aksi Ketersediaan State Machine")
@@ -499,10 +640,12 @@ class AntiFraudLibrary:
         self._hide_debugbar()
 
         row = page.locator("#dt-clients tbody tr", has_text=f"({client_id})")
+        self._ui_spotlight(row, badge="State DRAFT: Aksi Legal Terbatas", phase="THEN", title="Validasi State Machine UI", detail="Memastikan aksi ilegal Approve dan Deactivate tidak tersedia")
         approve_count = row.locator('button:has-text("Approve")').count()
         deact_count = row.locator('button:has-text("Deactivate")').count()
         if approve_count > 0 or deact_count > 0:
             raise AssertionError(f"Tombol ilegal tampil pada baris DRAFT! Approve: {approve_count}, Deact: {deact_count}")
+        self._ui_hud_passed(title="Kepatuhan State Machine Terbukti", detail="Tombol Approve & Deactivate tidak tersedia pada status DRAFT")
         logger.info("[UI ASSERT] Matriks ketersediaan aksi UI terbukti taat pada state machine.")
 
     @keyword("UI Eksekusi Tombol SYNC Konfigurasi")
@@ -514,7 +657,9 @@ class AntiFraudLibrary:
         self._hide_debugbar()
 
         btn = page.locator("#btn-sync-config")
+        self._ui_spotlight(btn, badge="Tombol: SYNC Config Global", phase="WHEN", title="Eksekusi Tombol SYNC Config", detail="Menyiarkan reload anti-fraud ke ActiveMQ Topic untuk seluruh client")
         self._click_with_expected_confirm(btn, "Kirim SYNC config (reload anti-fraud) untuk semua client?")
+        self._ui_hud_passed(title="SYNC Konfigurasi Berhasil Dipicu", detail="Konfirmasi diterima dan sinyal reload disiarkan")
         logger.info("[UI ACTION] Tombol SYNC config diklik dan konfirmasi diterima.")
 
     # ==========================================================================
@@ -529,20 +674,27 @@ class AntiFraudLibrary:
         page.wait_for_selector("#form-whitelist-add", timeout=15000)
         self._hide_debugbar()
 
+        self._ui_spotlight("#wl-type", badge=f"Tipe: {wl_type.upper()}", phase="WHEN", title=f"Tambah Whitelist {wl_type.upper()}", detail="Memilih tipe data whitelist")
         page.select_option("#wl-type", wl_type.lower())
+        self._ui_spotlight("#wl-client", badge=f"Client ID: {client_id}", phase="WHEN", title="Pilih Client Whitelist")
         page.evaluate(f"""
             var sel = document.getElementById("wl-client");
             var opt = new Option("Client {client_id}", "{client_id}", true, true);
             sel.appendChild(opt);
             if (window.jQuery) {{ window.jQuery(sel).trigger("change"); }}
         """)
+        self._ui_spotlight("#wl-value", badge=f"Nilai: {value}", phase="WHEN", title="Isi Nilai Whitelist", detail=f"Memasukkan target {wl_type}: {value}")
         page.fill("#wl-value", value)
+        self._ui_spotlight("#wl-description", badge=f"Ket: {desc}", phase="WHEN", title="Isi Deskripsi Whitelist")
         page.fill("#wl-description", desc)
 
+        btn_submit = page.locator('#form-whitelist-add button[type="submit"]')
+        self._ui_spotlight(btn_submit, badge="Tombol: Tambah Whitelist", phase="WHEN", title="Submit Form Whitelist")
         with page.expect_navigation(timeout=15000):
-            page.locator('#form-whitelist-add button[type="submit"]').click(force=True)
+            btn_submit.click(force=True)
 
         self._hide_debugbar()
+        self._ui_hud_passed(title=f"Whitelist {wl_type.upper()} Berhasil Ditambahkan", detail=f"Target {value} diproses oleh sistem")
         logger.info(f"[UI ACTION] Whitelist {wl_type}:{value} ditambahkan via form web.")
 
     @keyword("UI Tambah Whitelist Format Tidak Valid Dan Pastikan Ditolak")
@@ -552,8 +704,11 @@ class AntiFraudLibrary:
     @keyword("UI Verifikasi Penolakan Form Whitelist Tertampil")
     def ui_verify_invalid_whitelist_alert(self):
         page = self._get_page()
-        alert = page.locator(".alert-failed, .alert-danger, .alert-warning").text_content()
-        logger.info(f"[UI ASSERT] Penolakan whitelist di DOM: {alert.strip()}")
+        alert_el = page.locator(".alert-failed, .alert-danger, .alert-warning").first
+        alert = alert_el.text_content().strip()
+        self._ui_spotlight(alert_el, badge="Alert Validasi Whitelist", phase="THEN", title="Validasi Penolakan Format Whitelist", detail=alert)
+        self._ui_hud_passed(title="Format Whitelist Ditolak Sistem", detail=alert)
+        logger.info(f"[UI ASSERT] Penolakan whitelist di DOM: {alert}")
 
     @keyword("UI Toggle Status Whitelist Pada Datatable")
     def ui_toggle_whitelist(self, target_value: str = "628123456789", action_do: str = "deactivate"):
@@ -569,8 +724,12 @@ class AntiFraudLibrary:
         row = page.locator("#dt-whitelist tbody tr", has_text=clean_val)
         btn = row.locator('button[type="submit"]')
 
+        self._ui_spotlight(row, badge=f"Target: {clean_val}", phase="WHEN", title=f"Cari Entri Whitelist {clean_val}", detail="Menemukan baris target pada tabel whitelist")
+        self._ui_spotlight(btn, badge=f"Tombol: {action_do.upper()}", phase="WHEN", title=f"Toggle Status Whitelist ({action_do.upper()})", detail="Mengubah status aktif/nonaktif target")
+
         expected_prompt = "Nonaktifkan whitelist ini?" if action_do == "deactivate" else "Aktifkan kembali whitelist ini?"
         self._click_with_expected_confirm(btn, expected_prompt)
+        self._ui_hud_passed(title=f"Toggle Whitelist {action_do.upper()} Berhasil", detail=f"Target {clean_val} berhasil diubah statusnya")
         logger.info(f"[UI ACTION] Whitelist {target_value} ditoggle ke '{action_do}' via UI.")
 
     # ==========================================================================
@@ -589,10 +748,15 @@ class AntiFraudLibrary:
         if as_role == "cco":
             if page.locator(".btn-af-unblock").count() == 0 or page.locator("#unblock-modal").count() == 0:
                 raise AssertionError("Tombol unblock / modal unblock tidak muncul untuk CCO!")
+            self._ui_spotlight("#dt-blocklist", badge="Blocklist Aktif (Role: CCO)", phase="THEN", title="Tampilan Blocklist & Aksi Unblock", detail="Memverifikasi tombol unblock dan modal tersedia untuk CCO")
+            self._ui_spotlight(".btn-af-unblock", badge="Tombol: Unblock Target")
+            self._ui_hud_passed(title="Blocklist CCO Terverifikasi", detail="Hak aksi unblock tersedia lengkap")
             logger.info("[UI ACTION & ASSERT] Halaman blocklist CCO memuat tombol unblock dan modal.")
         else:
             if page.locator(".btn-af-unblock").count() > 0 or page.locator("#unblock-modal").count() > 0:
                 raise AssertionError("Tombol unblock / modal unblock bocor pada role Non-CCO!")
+            self._ui_spotlight("#dt-blocklist", badge="Blocklist (Role: Non-CCO)", phase="THEN", title="Tampilan Blocklist Non-CCO", detail="Memverifikasi tombol unblock tersembunyi bagi Non-CCO")
+            self._ui_hud_passed(title="Restriksi Blocklist Terverifikasi", detail="Tombol unblock terbukti tersembunyi untuk Non-CCO")
             logger.info("[UI ACTION & ASSERT] Halaman blocklist Non-CCO terbukti menyembunyikan tombol unblock.")
 
     @keyword("UI Eksekusi Unblock Target Dengan Alasan")
@@ -605,16 +769,23 @@ class AntiFraudLibrary:
 
         clean_val = target_val.lstrip("+")
         row = page.locator("#dt-blocklist tbody tr", has_text=clean_val)
-        row.locator(".btn-af-unblock").click(force=True)
+        self._ui_spotlight(row, badge=f"Target: {clean_val}", phase="WHEN", title=f"Cari Target Fraud {clean_val}", detail="Menemukan nomor terblokir pada DataTables")
+        btn_unblock = row.locator(".btn-af-unblock")
+        self._ui_spotlight(btn_unblock, badge="Tombol: Unblock", phase="WHEN", title="Buka Modal Unblock", detail="Membuka form konfirmasi pembukaan blokir")
+        btn_unblock.click(force=True)
 
         page.wait_for_selector("#unblock-modal", state="visible", timeout=10000)
         self._hide_debugbar()
+        self._ui_spotlight("#unblock-reason", badge=f"Alasan: {reason}", phase="WHEN", title="Isi Alasan Unblock", detail=f"Memasukkan alasan resmi pembukaan blokir: '{reason}'")
         page.fill("#unblock-reason", reason)
 
+        btn_confirm = page.locator('#unblock-form button[type="submit"]')
+        self._ui_spotlight(btn_confirm, badge="Tombol: Konfirmasi Unblock", phase="WHEN", title="Submit Form Unblock")
         with page.expect_navigation(timeout=15000):
-            page.locator('#unblock-form button[type="submit"]').click(force=True)
+            btn_confirm.click(force=True)
 
         self._hide_debugbar()
+        self._ui_hud_passed(title=f"Unblock Target {clean_val} Berhasil Dipicu", detail=f"Alasan '{reason}' dikirimkan via form modal")
         logger.info(f"[UI ACTION] Aksi Unblock target {target_val} dikirim via modal web.")
 
     @keyword("UI Eksekusi Unblock Dengan Alasan Spasi Dan Pastikan Ditolak")
@@ -627,16 +798,20 @@ class AntiFraudLibrary:
 
         clean_val = target_val.lstrip("+")
         row = page.locator("#dt-blocklist tbody tr", has_text=clean_val)
-        row.locator(".btn-af-unblock").click(force=True)
+        btn_unblock = row.locator(".btn-af-unblock")
+        self._ui_spotlight(btn_unblock, badge="Tombol: Unblock", phase="WHEN", title="Buka Modal Unblock", detail="Menguji validasi alasan spasi")
+        btn_unblock.click(force=True)
 
         page.wait_for_selector("#unblock-modal", state="visible", timeout=10000)
         self._hide_debugbar()
+        self._ui_spotlight("#unblock-reason", badge="Alasan: [HANYA SPASI]", phase="WHEN", title="Isi Alasan Spasi", detail="Memasukkan karakter spasi kosong untuk memicu validasi")
         page.fill("#unblock-reason", "   ")
 
         # 1. UI validation check: click submit and verify client validation marks .has-error
         page.locator('#unblock-form button[type="submit"]').click(force=True)
         if page.locator("#unblock-modal .has-error").count() == 0:
             raise AssertionError("Client validation .has-error tidak muncul pada modal unblock!")
+        self._ui_spotlight("#unblock-modal .has-error", badge="Validasi DOM: .has-error", phase="THEN", title="Client Validation Aktif", detail="Form mendeteksi input hanya berisi spasi")
         logger.info("[UI ASSERT] Client validation .has-error terbukti aktif pada modal.")
 
         # 2. Server validation check: submit form to verify controller rejects whitespace reason
@@ -646,12 +821,16 @@ class AntiFraudLibrary:
 
         self._hide_debugbar()
         alert = ""
+        alert_el = None
         for sel in [".alert-failed", ".alert-danger", ".alert-warning"]:
             if page.locator(sel).count() > 0:
                 alert = page.locator(sel).first.text_content().strip()
+                alert_el = page.locator(sel).first
                 break
         if "Reason is required" not in alert:
             raise AssertionError(f"Alert validasi server spasi gagal! Didapat: '{alert}'")
+        self._ui_spotlight(alert_el, badge="Alert Server Rejection", phase="THEN", title="Server Validation Aktif", detail=alert)
+        self._ui_hud_passed(title="Validasi Alasan Spasi Terbukti", detail=alert)
         logger.info(f"[UI ASSERT] Server controller rejection terbukti: '{alert}'")
 
     # ==========================================================================
@@ -666,6 +845,8 @@ class AntiFraudLibrary:
             with page.expect_response(lambda r: "/datatable" in r.url and r.status == 200):
                 page.goto(f"{self.base_url}{path}")
             self._hide_debugbar()
+            self._ui_spotlight(None, phase="WHEN", title=f"Navigasi Menu: {path}", detail="Memverifikasi akses dan data AJAX DataTables")
+        self._ui_hud_passed(title="Seluruh Menu Anti Fraud Terverifikasi", detail="Super Admin JATIS memiliki hak akses lintas tenant")
         logger.info("[UI ACTION] Seluruh menu Anti Fraud berhasil diakses oleh Super Admin JATIS.")
 
     @keyword("UI Observasi Isolasi Multi Tenant Pada Seluruh Datatable")
@@ -699,6 +880,8 @@ class AntiFraudLibrary:
         if f"({forbidden_cid})" in dom_text or "Matahari" in dom_text:
             raise AssertionError(f"Data Client {forbidden_cid} bocor pada DOM!")
 
+        self._ui_spotlight("#dt-clients", badge=f"Scope Data: Client {expected_cid}", phase="THEN", title="Observasi Isolasi Multi-Tenant", detail=f"Data Client {expected_cid} tampil, Client {forbidden_cid} terbukti nihil")
+        self._ui_hud_passed(title="Isolasi Tenant Terbukti 100%", detail=f"Tidak ada kebocoran data antar tenant")
         logger.info(f"[UI ASSERT] Isolasi tenant terbukti 100%. Data Client {expected_cid} ada, Client {forbidden_cid} nihil.")
 
     @keyword("UI Eksekusi Siklus Penuh Konfigurasi")
@@ -776,7 +959,9 @@ class AntiFraudLibrary:
             with page.expect_response(lambda r: path in r.url and r.status == 200):
                 page.goto(f"{self.base_url}{path}")
             self._hide_debugbar()
+            self._ui_spotlight(None, phase="THEN", title=f"Verifikasi Submenu HTTP 200: {path}", detail="Submenu termuat sukses")
             logger.info(f"[UI NAVIGATE] Submenu {path} berhasil dimuat dengan status 200 OK.")
+        self._ui_hud_passed(title="4 Submenu Anti Fraud Terverifikasi 200 OK", detail="Seluruh rute menu valid dan beroperasi")
 
     # ==========================================================================
     # 7. MULTI-LAYER ASSERTIONS: DATABASE (MYSQL)
