@@ -1,98 +1,1734 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 7.4.2 (Python 3.14.10 on linux)" generated="2026-11-17T09:46:39.075003" rpa="false" schemaversion="5">
+<robot generator="Robot 7.4.2 (Python 3.14.10 on linux)" generated="2026-11-17T15:11:19.335875" rpa="false" schemaversion="5">
 <suite id="s1" name="Test Anti Fraud Cms" source="/home/gunawan/Jamob/2026/PB082643640012YA/mobilebroadcast/rf_mobilebroadcast/tests/test_anti_fraud_cms.robot">
-<test id="s1-t1" name="TC-016 Eksekusi Tombol SYNC Menyiarkan Sinyal Reload Anti Fraud Ke ActiveMQ Topic" line="128">
+<test id="s1-t1" name="TC-001 Verifikasi Menu Anti Fraud Dan Empat Submenu Tampil Di Sidebar Portal JNS7" line="10">
 <kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
-<kw name="Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:39.678695" level="INFO">[DB] Data uji berhasil dibersihkan dari database broadcast.</msg>
-<doc>Cleans up test records for client 101, 9999, and specific test numbers.</doc>
-<status status="PASS" start="2026-11-17T09:46:39.296444" elapsed="0.382979"/>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:20.014953" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:19.616682" elapsed="0.399308"/>
 </kw>
-<kw name="Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:39.680388" level="INFO">[AMQ] Seluruh koneksi STOMP ditutup.</msg>
-<status status="PASS" start="2026-11-17T09:46:39.679988" elapsed="0.000595"/>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:20.016772" elapsed="0.000646"/>
 </kw>
-<status status="PASS" start="2026-11-17T09:46:39.295806" elapsed="0.385020"/>
+<status status="PASS" start="2026-11-17T15:11:19.615776" elapsed="0.402009"/>
+</kw>
+<kw name="Given Snapshot Log Delta Laravel SUT Dicatat" owner="anti_fraud_keywords">
+<kw name="SSH Ambil Snapshot Log Delta Laravel SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:20.676493" level="INFO">[LOG OFFSET] Offset awal log SUT (default): 570016 bytes.</msg>
+<status status="PASS" start="2026-11-17T15:11:20.020546" elapsed="0.656366"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:20.019029" elapsed="0.658105"/>
+</kw>
+<kw name="When Pengguna Menjalankan Browser E2E Journey Verifikasi Menu Dan Sidebar Spotlight" owner="anti_fraud_keywords">
+<kw name="Jalankan Browser E2E Journey Verifikasi Menu Dan Sidebar Spotlight" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:21.207146" level="INFO">[BROWSER] Meluncurkan Chromium Engine (Headed=False)...</msg>
+<msg time="2026-11-17T15:11:26.487947" level="INFO">[SNAPSHOT] Saved: rf_01_given_portal_login.png
+  [SNAPSHOT] Saved: rf_02_when_credentials_filled.png
+  [SNAPSHOT] Saved: rf_03_then_dashboard_active.png
+  [SNAPSHOT] Saved: rf_04_and_sidebar_antifraud_selected.png</msg>
+<status status="PASS" start="2026-11-17T15:11:20.678002" elapsed="5.810067"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:20.677494" elapsed="5.810702"/>
+</kw>
+<kw name="Then Seluruh Endpoint Submenu Anti Fraud Mengembalikan Status HTTP 200 OK" owner="anti_fraud_keywords">
+<kw name="UI Verifikasi Seluruh Submenu Anti Fraud 200 OK" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:27.405700" level="INFO">[UI NAVIGATE] Submenu /antifraud/config berhasil dimuat dengan status 200 OK.</msg>
+<msg time="2026-11-17T15:11:27.793130" level="INFO">[UI NAVIGATE] Submenu /antifraud/whitelist berhasil dimuat dengan status 200 OK.</msg>
+<msg time="2026-11-17T15:11:28.155793" level="INFO">[UI NAVIGATE] Submenu /antifraud/blocks berhasil dimuat dengan status 200 OK.</msg>
+<msg time="2026-11-17T15:11:28.497701" level="INFO">[UI NAVIGATE] Submenu /antifraud/audit berhasil dimuat dengan status 200 OK.</msg>
+<status status="PASS" start="2026-11-17T15:11:26.488878" elapsed="2.008983"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:26.488489" elapsed="2.009521"/>
+</kw>
+<kw name="And Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="anti_fraud_keywords">
+<kw name="SSH Verifikasi Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:29.140667" level="INFO">[LOG DELTA] Log delta Laravel SUT bebas dari kesalahan fatal.</msg>
+<status status="PASS" start="2026-11-17T15:11:28.498921" elapsed="0.642273"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:28.498402" elapsed="0.642915"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:30.493246" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:29.142285" elapsed="1.351203"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:30.493757" elapsed="0.000173"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:30.847860" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:30.494062" elapsed="0.354905"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:29.141811" elapsed="1.707608"/>
+</kw>
+<tag>cms</tag>
+<tag>happy_path</tag>
+<tag>P0</tag>
+<tag>rbac</tag>
+<tag>sidebar</tag>
+<tag>TC-001</tag>
+<status status="PASS" start="2026-11-17T15:11:19.613201" elapsed="11.236664"/>
+</test>
+<test id="s1-t2" name="TC-002 Validasi Penolakan Akses Ke Rute Anti Fraud Bagi Akun Tanpa Permission" line="17">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:31.255783" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:30.887735" elapsed="0.368882"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:31.257348" elapsed="0.000511"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:30.886858" elapsed="0.371328"/>
+</kw>
+<kw name="Given Snapshot Log Delta Laravel SUT Dicatat" owner="anti_fraud_keywords">
+<kw name="SSH Ambil Snapshot Log Delta Laravel SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:31.933151" level="INFO">[LOG OFFSET] Offset awal log SUT (default): 570016 bytes.</msg>
+<status status="PASS" start="2026-11-17T15:11:31.260221" elapsed="0.674229"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:31.259146" elapsed="0.675673"/>
+</kw>
+<kw name="And Pengguna Non Authorized Berhasil Login Ke Portal JNS7" owner="anti_fraud_keywords">
+<kw name="UI Buka Portal Dan Login Sebagai Pengguna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:31.937919" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'noaccessuser'...</msg>
+<msg time="2026-11-17T15:11:34.722946" level="INFO">[UI LOGIN] Pengguna 'noaccessuser' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<arg>noaccessuser</arg>
+<doc>Performs true browser login via the portal login form.</doc>
+<status status="PASS" start="2026-11-17T15:11:31.937323" elapsed="2.785860"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:31.936012" elapsed="2.787400"/>
+</kw>
+<kw name="When Pengguna Non Authorized Mengakses Halaman Client Config Langsung" owner="anti_fraud_keywords">
+<kw name="UI Navigasi Halaman Langsung Melalui Browser" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:34.724763" level="INFO">[UI NAVIGATE] Mengakses URL /antifraud/config langsung melalui browser...</msg>
+<arg>/antifraud/config</arg>
+<status status="PASS" start="2026-11-17T15:11:34.724465" elapsed="1.240491"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:34.723934" elapsed="1.241514"/>
+</kw>
+<kw name="Then Sistem Mengalihkan Akses Menuju Halaman Awal" owner="anti_fraud_keywords">
+<kw name="UI Verifikasi Akses Dialihkan Dari Halaman Rahasia" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:35.969224" level="INFO">[UI ASSERT] URL setelah penolakan: http://192.168.181.60/mobilebroadcast/home</msg>
+<status status="PASS" start="2026-11-17T15:11:35.968448" elapsed="0.001185"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:35.966708" elapsed="0.003479"/>
+</kw>
+<kw name="And Permintaan AJAX Search Client Mengembalikan Status 403 Forbidden" owner="anti_fraud_keywords">
+<kw name="UI Verifikasi In Page Fetch AJAX Mengembalikan 403" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:36.142610" level="INFO">[UI ASSERT] In-page fetch status: 403</msg>
+<status status="PASS" start="2026-11-17T15:11:35.973243" elapsed="0.169767"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:35.971566" elapsed="0.171854"/>
+</kw>
+<kw name="And Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="anti_fraud_keywords">
+<kw name="SSH Verifikasi Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:36.810834" level="INFO">[LOG DELTA] Log delta Laravel SUT bebas dari kesalahan fatal.</msg>
+<status status="PASS" start="2026-11-17T15:11:36.145586" elapsed="0.665742"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:36.144380" elapsed="0.667100"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:37.907654" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:36.812316" elapsed="1.096104"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:37.909309" elapsed="0.000669"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:38.319156" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:37.910504" elapsed="0.409465"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:36.811912" elapsed="1.508616"/>
+</kw>
+<tag>cms</tag>
+<tag>negative</tag>
+<tag>P1</tag>
+<tag>rbac</tag>
+<tag>security</tag>
+<tag>TC-002</tag>
+<status status="PASS" start="2026-11-17T15:11:30.885825" elapsed="7.435189"/>
+</test>
+<test id="s1-t3" name="TC-003 Tambah Konfigurasi Anti Fraud Client Baru Dengan Status Awal DRAFT" line="26">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:38.886458" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:38.354143" elapsed="0.533175"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:38.887875" elapsed="0.000552"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:38.353398" elapsed="0.535319"/>
+</kw>
+<kw name="Given Database Memastikan Client Uji Belum Memiliki Konfigurasi Anti Fraud" owner="anti_fraud_keywords">
+<kw name="DB Pastikan Client Belum Memiliki Konfigurasi Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:39.143957" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:11:38.891543" elapsed="0.253296"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:38.889828" elapsed="0.255464"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Permintaan Penambahan Konfigurasi Baru" owner="anti_fraud_keywords">
+<kw name="UI Tambah Konfigurasi Client Baru" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:39.148917" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'admin'...</msg>
+<msg time="2026-11-17T15:11:41.909035" level="INFO">[UI LOGIN] Pengguna 'admin' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:11:43.695301" level="INFO">[UI ACTION] Konfigurasi client 101 berhasil dibuat via UI modal form.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:11:39.148218" elapsed="4.547314"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:39.146510" elapsed="4.549216"/>
+</kw>
+<kw name="Then Data Konfigurasi Client Pada Database Tersimpan Dengan Status DRAFT" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Konfigurasi Cocok Sempurna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:43.899399" level="INFO">--- START Komparasi Lengkap Database Konfigurasi | Length=2062 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:11:43.899620" level="INFO">{
+  "expected": {
+    "client_id": 101,
+    "approval_status": "DRAFT",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "rule_actions": {
+      "rate_limit": "ALERT + BLOCK",
+      "sequential": "ALERT + BLOCK",
+      "traffic": "ALERT",
+      "loss": "ALERT"
+    }
+  },
+  "actual": {
+    "id": 150,
+    "client_id": 101,
+    "client_name": "PT.DIGITAL VISION NUSANTARA",
+    "sender_id": 0,
+    "sender_name": "ALL",
+    "division_id": 0,
+    "division_name": "ALL",
+    "approval_status": "DRAFT",
+    "approved_by": null,
+    "effective_date": null,
+    "alert_emails": "[\"ops@test.com\"]",
+    "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"},{\"name\":\"W2\",\"val\":1,\"unit\":\"HOUR\",\"loc\":25,\"intl\":8,\"scope\":\"DOMESTIC\"},{\"name\":\"W3\",\"val\":1,\"unit\":\"DAY\",\"loc\":50,\"intl\":15,\"scope\":\"DOMESTIC\"},{\"name\":\"W4\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"INTERNATIONAL\"},{\"name\":\"W5\",\"val\":1,\"unit\":\"HOUR\",\"loc\":25,\"intl\":8,\"scope\":\"INTERNATIONAL\"},{\"name\":\"W6\",\"val\":1,\"unit\":\"DAY\",\"loc\":50,\"intl\":15,\"scope\":\"INTERNATIONAL\"}]",
+    "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"},{\"name\":\"W2\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"INTERNATIONAL\"}]",
+    "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+    "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+    "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "created_by": "admin",
+    "created_at": "2026-11-17 15:11:43",
+    "updated_at": "2026-11-17 15:11:43"
+  }
+}</msg>
+<msg time="2026-11-17T15:11:43.899784" level="INFO">--- END Komparasi Lengkap Database Konfigurasi ---</msg>
+<arg>101</arg>
+<arg>DRAFT</arg>
+<status status="PASS" start="2026-11-17T15:11:43.696671" elapsed="0.203312"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:43.696201" elapsed="0.204195"/>
+</kw>
+<kw name="And Seluruh Kolom Parameter Rule Sesuai Sempurna Dengan Payload" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Konfigurasi Cocok Sempurna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:44.096497" level="INFO">--- START Komparasi Lengkap Database Konfigurasi | Length=2062 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:11:44.096584" level="INFO">{
+  "expected": {
+    "client_id": 101,
+    "approval_status": "DRAFT",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "rule_actions": {
+      "rate_limit": "ALERT + BLOCK",
+      "sequential": "ALERT + BLOCK",
+      "traffic": "ALERT",
+      "loss": "ALERT"
+    }
+  },
+  "actual": {
+    "id": 150,
+    "client_id": 101,
+    "client_name": "PT.DIGITAL VISION NUSANTARA",
+    "sender_id": 0,
+    "sender_name": "ALL",
+    "division_id": 0,
+    "division_name": "ALL",
+    "approval_status": "DRAFT",
+    "approved_by": null,
+    "effective_date": null,
+    "alert_emails": "[\"ops@test.com\"]",
+    "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"},{\"name\":\"W2\",\"val\":1,\"unit\":\"HOUR\",\"loc\":25,\"intl\":8,\"scope\":\"DOMESTIC\"},{\"name\":\"W3\",\"val\":1,\"unit\":\"DAY\",\"loc\":50,\"intl\":15,\"scope\":\"DOMESTIC\"},{\"name\":\"W4\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"INTERNATIONAL\"},{\"name\":\"W5\",\"val\":1,\"unit\":\"HOUR\",\"loc\":25,\"intl\":8,\"scope\":\"INTERNATIONAL\"},{\"name\":\"W6\",\"val\":1,\"unit\":\"DAY\",\"loc\":50,\"intl\":15,\"scope\":\"INTERNATIONAL\"}]",
+    "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"},{\"name\":\"W2\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"INTERNATIONAL\"}]",
+    "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+    "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+    "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "created_by": "admin",
+    "created_at": "2026-11-17 15:11:43",
+    "updated_at": "2026-11-17 15:11:43"
+  }
+}</msg>
+<msg time="2026-11-17T15:11:44.096660" level="INFO">--- END Komparasi Lengkap Database Konfigurasi ---</msg>
+<arg>101</arg>
+<arg>DRAFT</arg>
+<status status="PASS" start="2026-11-17T15:11:43.902930" elapsed="0.193806"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:43.901310" elapsed="0.195539"/>
+</kw>
+<kw name="And Audit Log CONFIG_INSERT Tercatat Pada Database" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Audit Log Tercatat" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:44.317808" level="INFO">[DB AUDIT] Audit log 'CONFIG_INSERT' tervalidasi di DB.</msg>
+<arg>101</arg>
+<arg>CONFIG_INSERT</arg>
+<arg>admin</arg>
+<status status="PASS" start="2026-11-17T15:11:44.097470" elapsed="0.221226"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:44.097154" elapsed="0.222081"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:45.503199" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:44.321960" elapsed="1.181967"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:45.504952" elapsed="0.000823"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:45.996994" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:45.506408" elapsed="0.491406"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:44.320695" elapsed="1.677554"/>
+</kw>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>happy_path</tag>
+<tag>lifecycle</tag>
+<tag>P0</tag>
+<tag>TC-003</tag>
+<status status="PASS" start="2026-11-17T15:11:38.351989" elapsed="7.646622"/>
+</test>
+<test id="s1-t4" name="TC-004 Validasi Penolakan Penambahan Konfigurasi Duplikat Untuk Client Yang Sama" line="34">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:46.413381" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:46.031560" elapsed="0.382778"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:46.415139" elapsed="0.000634"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:46.031042" elapsed="0.385094"/>
+</kw>
+<kw name="Given Database Memiliki Konfigurasi Anti Fraud Aktif Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:46.646803" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:11:46.905035" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: APPROVED) disiapkan.</msg>
+<arg>101</arg>
+<arg>APPROVED</arg>
+<arg>admin</arg>
+<status status="PASS" start="2026-11-17T15:11:46.419205" elapsed="0.486762"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:46.417327" elapsed="0.489153"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Permintaan Penambahan Konfigurasi Duplikat" owner="anti_fraud_keywords">
+<kw name="UI Tambah Konfigurasi Duplikat Dan Pastikan Ditolak" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:46.909836" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:11:48.570478" level="INFO">[UI ACTION] Permintaan penambahan duplikasi dikirim via UI.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:11:46.909270" elapsed="1.661392"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:46.907623" elapsed="1.663250"/>
+</kw>
+<kw name="Then Sistem Menolak Permintaan Duplikasi Dengan Pesan Kesalahan Valid" owner="anti_fraud_keywords">
+<kw name="UI Verifikasi Penolakan Duplikasi Tertampil" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:48.617344" level="INFO">[UI ASSERT] Alert duplikasi di DOM: '×
+          Config untuk client ini sudah ada'</msg>
+<status status="PASS" start="2026-11-17T15:11:48.571934" elapsed="0.045553"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:48.571369" elapsed="0.046242"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:49.806283" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:48.618413" elapsed="1.188631"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:49.807739" elapsed="0.000537"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:50.211902" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:49.808692" elapsed="0.404078"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:48.618006" elapsed="1.595179"/>
+</kw>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>negative</tag>
+<tag>P1</tag>
+<tag>TC-004</tag>
+<tag>validation</tag>
+<status status="PASS" start="2026-11-17T15:11:46.029633" elapsed="4.183972"/>
+</test>
+<test id="s1-t5" name="TC-005 Validasi Penolakan Nilai Parameter Threshold Warn Dan Crit Tidak Valid" line="40">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:50.615302" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:50.248159" elapsed="0.368038"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:50.616757" elapsed="0.000503"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:50.247453" elapsed="0.370097"/>
+</kw>
+<kw name="Given Database Memastikan Client Uji Belum Memiliki Konfigurasi Anti Fraud" owner="anti_fraud_keywords">
+<kw name="DB Pastikan Client Belum Memiliki Konfigurasi Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:50.873936" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:11:50.620415" elapsed="0.254342"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:50.618649" elapsed="0.256550"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Form Konfigurasi Dengan Nilai Threshold Tidak Valid" owner="anti_fraud_keywords">
+<kw name="UI Tambah Konfigurasi Threshold Tidak Valid Dan Pastikan Ditolak" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:50.878912" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:11:52.780713" level="INFO">[UI ACTION] Validasi threshold dipicu pada form modal.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:11:50.878014" elapsed="1.903261"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:50.876416" elapsed="1.905456"/>
+</kw>
+<kw name="Then Sistem Menolak Penyimpanan Konfigurasi Serta Menampilkan Validasi Error" owner="anti_fraud_keywords">
+<kw name="SSH Verifikasi Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:53.614574" level="INFO">[LOG DELTA] Log delta Laravel SUT bebas dari kesalahan fatal.</msg>
+<status status="PASS" start="2026-11-17T15:11:52.784369" elapsed="0.830912"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:52.783013" elapsed="0.832445"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:54.805335" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:53.616505" elapsed="1.189108"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:54.805915" elapsed="0.000196"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:55.168174" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:54.806262" elapsed="0.363078"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:53.615941" elapsed="1.553874"/>
+</kw>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>negative</tag>
+<tag>P1</tag>
+<tag>TC-005</tag>
+<tag>validation</tag>
+<status status="PASS" start="2026-11-17T15:11:50.246175" elapsed="4.924040"/>
+</test>
+<test id="s1-t6" name="TC-006 Edit Konfigurasi Berstatus DRAFT Dan Verifikasi Snapshot Kolom Tidak Berubah" line="46">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:55.640429" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:55.202656" elapsed="0.438655"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:11:55.641889" elapsed="0.000524"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:55.201954" elapsed="0.440740"/>
+</kw>
+<kw name="Given Database Memiliki Konfigurasi Anti Fraud Berstatus DRAFT Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:55.876313" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:11:56.150742" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: DRAFT) disiapkan.</msg>
+<arg>101</arg>
+<arg>DRAFT</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:11:55.644534" elapsed="0.506999"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:55.643553" elapsed="0.508587"/>
+</kw>
+<kw name="And Snapshot Baseline Konfigurasi Client Telah Disimpan" owner="anti_fraud_keywords">
+<kw name="DB Ambil Snapshot Konfigurasi Client" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:56.337484" level="INFO">--- START Snapshot Konfigurasi Client 101 | Length=1078 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:11:56.337586" level="INFO">{
+  "id": 152,
+  "client_id": 101,
+  "client_name": "PT.DIGITAL VISION NUSANTARA",
+  "sender_id": 0,
+  "sender_name": "ALL",
+  "division_id": 0,
+  "division_name": "ALL",
+  "approval_status": "DRAFT",
+  "approved_by": null,
+  "effective_date": null,
+  "alert_emails": "[\"ops@test.com\"]",
+  "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+  "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+  "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+  "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+  "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+  "enable_rate_limit": 1,
+  "enable_sequential": 1,
+  "enable_traffic_anomaly": 1,
+  "enable_loss_monitoring": 1,
+  "created_by": "admin",
+  "created_at": "2026-11-17 15:11:56",
+  "updated_at": "2026-11-17 15:11:56"
+}</msg>
+<msg time="2026-11-17T15:11:56.337662" level="INFO">--- END Snapshot Konfigurasi Client 101 ---</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:11:56.154234" elapsed="0.183512"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:56.153153" elapsed="0.184764"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Permintaan Pembaruan Parameter Konfigurasi" owner="anti_fraud_keywords">
+<kw name="UI Update Parameter Konfigurasi Client" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:56.338811" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:11:59.382966" level="INFO">[UI ACTION] Parameter konfigurasi client 101 berhasil diubah melalui form modal.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:11:56.338608" elapsed="3.044526"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:56.338268" elapsed="3.044996"/>
+</kw>
+<kw name="Then Parameter Konfigurasi Yang Diperbarui Terbukti Berubah Sesuai Ekspektasi" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Snapshot Konfigurasi Berhasil Diperbarui" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:59.564674" level="INFO">[DB ASSERT] Seluruh kolom lainnya terbukti identik dengan baseline.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:11:59.384236" elapsed="0.180732"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:59.383713" elapsed="0.181562"/>
+</kw>
+<kw name="And Seluruh Kolom Konfigurasi Lainnya Terbukti Tidak Berubah Dari Baseline" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Snapshot Konfigurasi Berhasil Diperbarui" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:11:59.744755" level="INFO">[DB ASSERT] Seluruh kolom lainnya terbukti identik dengan baseline.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:11:59.566695" elapsed="0.178384"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:59.565851" elapsed="0.179604"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:00.844412" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:11:59.748581" elapsed="1.096488"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:00.845709" elapsed="0.000561"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:01.335826" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:00.846672" elapsed="0.490168"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:11:59.746797" elapsed="1.590675"/>
+</kw>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>P1</tag>
+<tag>regression</tag>
+<tag>snapshot</tag>
+<tag>TC-006</tag>
+<status status="PASS" start="2026-11-17T15:11:55.200513" elapsed="6.137430"/>
+</test>
+<test id="s1-t7" name="TC-007 Edit Konfigurasi APPROVED Mengakibatkan Status Kembali Ke DRAFT Dan Reset Approver" line="54">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:01.736737" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:01.373471" elapsed="0.364469"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:01.738925" elapsed="0.000893"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:01.372870" elapsed="0.367469"/>
+</kw>
+<kw name="Given Database Memiliki Konfigurasi Anti Fraud Berstatus APPROVED Dengan Approved By Terisi" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:01.996425" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:12:02.230206" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: APPROVED) disiapkan.</msg>
+<arg>101</arg>
+<arg>APPROVED</arg>
+<arg>admin</arg>
+<status status="PASS" start="2026-11-17T15:12:01.742842" elapsed="0.488204"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:01.741316" elapsed="0.490183"/>
+</kw>
+<kw name="And Snapshot Baseline Konfigurasi Client Telah Disimpan" owner="anti_fraud_keywords">
+<kw name="DB Ambil Snapshot Konfigurasi Client" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:02.422380" level="INFO">--- START Snapshot Konfigurasi Client 101 | Length=1084 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:12:02.422705" level="INFO">{
+  "id": 153,
+  "client_id": 101,
+  "client_name": "PT.DIGITAL VISION NUSANTARA",
+  "sender_id": 0,
+  "sender_name": "ALL",
+  "division_id": 0,
+  "division_name": "ALL",
+  "approval_status": "APPROVED",
+  "approved_by": "admin",
+  "effective_date": null,
+  "alert_emails": "[\"ops@test.com\"]",
+  "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+  "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+  "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+  "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+  "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+  "enable_rate_limit": 1,
+  "enable_sequential": 1,
+  "enable_traffic_anomaly": 1,
+  "enable_loss_monitoring": 1,
+  "created_by": "admin",
+  "created_at": "2026-11-17 15:12:02",
+  "updated_at": "2026-11-17 15:12:02"
+}</msg>
+<msg time="2026-11-17T15:12:02.422866" level="INFO">--- END Snapshot Konfigurasi Client 101 ---</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:02.234380" elapsed="0.188815"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:02.232632" elapsed="0.191057"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Permintaan Pembaruan Parameter Konfigurasi" owner="anti_fraud_keywords">
+<kw name="UI Update Parameter Konfigurasi Client" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:02.427437" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:12:04.541025" level="INFO">[UI ACTION] Parameter konfigurasi client 101 berhasil diubah melalui form modal.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:02.426590" elapsed="2.114625"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:02.424867" elapsed="2.116520"/>
+</kw>
+<kw name="Then Status Konfigurasi Otomatis Kembali Menjadi DRAFT" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Snapshot Konfigurasi Otomatis Kembali Ke Draft" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:04.731370" level="INFO">[DB ASSERT] Konfigurasi terbukti otomatis kembali ke DRAFT dengan approver NULL.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:04.542259" elapsed="0.189531"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:04.541786" elapsed="0.190440"/>
+</kw>
+<kw name="And Kolom Approved By Direset Menjadi Null" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Snapshot Konfigurasi Otomatis Kembali Ke Draft" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:04.922611" level="INFO">[DB ASSERT] Konfigurasi terbukti otomatis kembali ke DRAFT dengan approver NULL.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:04.734844" elapsed="0.187947"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:04.733445" elapsed="0.189512"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:06.043818" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:04.923976" elapsed="1.120561"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:06.045352" elapsed="0.000800"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:06.485847" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:06.046794" elapsed="0.439948"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:04.923499" elapsed="1.563661"/>
+</kw>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>lifecycle</tag>
+<tag>P0</tag>
+<tag>regression</tag>
+<tag>TC-007</tag>
+<status status="PASS" start="2026-11-17T15:12:01.369901" elapsed="5.117621"/>
+</test>
+<test id="s1-t8" name="TC-008 Submit Konfigurasi DRAFT Menjadi PENDING_APPROVAL Dan Buktikan Nol Reload ActiveMQ" line="62">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:06.846799" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:06.521381" elapsed="0.326242"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:06.848204" elapsed="0.000495"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:06.520243" elapsed="0.328737"/>
 </kw>
 <kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
-<kw name="Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:39.684141" level="INFO">attempt reconnection (True, None, 0)</msg>
-<msg time="2026-11-17T09:46:39.684449" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
-<msg time="2026-11-17T09:46:39.728847" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
-<msg time="2026-11-17T09:46:39.730544" level="INFO">Created thread &lt;Thread(Thread-1 (__receiver_loop), started daemon 139773699159744)&gt; using func &lt;function default_create_thread at 0x7f1f9a78e8d0&gt;</msg>
-<msg time="2026-11-17T09:46:39.731152" level="INFO">Sending frame: 'STOMP'</msg>
-<msg time="2026-11-17T09:46:39.771638" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
-<msg time="2026-11-17T09:46:40.072244" level="INFO">[AMQ] Subscriber STOMP aktif pada Topic /topic/jns.topic.command. Buffer dibersihkan.</msg>
-<status status="PASS" start="2026-11-17T09:46:39.683023" elapsed="0.389613"/>
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:06.852198" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:12:06.852582" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:06.902835" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:06.903485" level="INFO">Created thread &lt;Thread(Thread-25 (__receiver_loop), started daemon 140248323450560)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:12:06.903748" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:12:06.952128" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:12:06.952437" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:12:06.850927" elapsed="0.101670"/>
 </kw>
-<status status="PASS" start="2026-11-17T09:46:39.681842" elapsed="0.391061"/>
+<status status="PASS" start="2026-11-17T15:12:06.849855" elapsed="0.102926"/>
+</kw>
+<kw name="And Database Memiliki Konfigurasi Anti Fraud Berstatus DRAFT Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:07.205794" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:12:07.435000" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: DRAFT) disiapkan.</msg>
+<arg>101</arg>
+<arg>DRAFT</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:12:06.955117" elapsed="0.481018"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:06.953297" elapsed="0.483277"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Aksi Submit Konfigurasi" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Aksi Lifecycle Pada Baris Datatable" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:07.439665" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:12:08.223572" level="INFO">[DIALOG] Browser prompt: 'Submit config ini untuk approval CCO?'</msg>
+<msg time="2026-11-17T15:12:09.029221" level="INFO">[UI ACTION] Aksi 'submit' untuk client 101 diklik via tombol antarmuka.</msg>
+<arg>admin</arg>
+<arg>submit</arg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:07.438872" elapsed="1.590491"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:07.437608" elapsed="1.591895"/>
+</kw>
+<kw name="Then Status Konfigurasi Pada Database Berubah Menjadi PENDING_APPROVAL" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Konfigurasi Cocok Sempurna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:09.243532" level="INFO">--- START Komparasi Lengkap Database Konfigurasi | Length=1511 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:12:09.243776" level="INFO">{
+  "expected": {
+    "client_id": 101,
+    "approval_status": "PENDING_APPROVAL",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "rule_actions": {
+      "rate_limit": "ALERT + BLOCK",
+      "sequential": "ALERT + BLOCK",
+      "traffic": "ALERT",
+      "loss": "ALERT"
+    }
+  },
+  "actual": {
+    "id": 154,
+    "client_id": 101,
+    "client_name": "PT.DIGITAL VISION NUSANTARA",
+    "sender_id": 0,
+    "sender_name": "ALL",
+    "division_id": 0,
+    "division_name": "ALL",
+    "approval_status": "PENDING_APPROVAL",
+    "approved_by": null,
+    "effective_date": null,
+    "alert_emails": "[\"ops@test.com\"]",
+    "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+    "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+    "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+    "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+    "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "created_by": "admin",
+    "created_at": "2026-11-17 15:12:07",
+    "updated_at": "2026-11-17 15:12:08"
+  }
+}</msg>
+<msg time="2026-11-17T15:12:09.244021" level="INFO">--- END Komparasi Lengkap Database Konfigurasi ---</msg>
+<arg>101</arg>
+<arg>PENDING_APPROVAL</arg>
+<status status="PASS" start="2026-11-17T15:12:09.030182" elapsed="0.214150"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:09.029815" elapsed="0.214880"/>
+</kw>
+<kw name="And Ketiadaan Sinyal Reload Pada ActiveMQ Topic Terbukti Selama Rentang Waktu Pengamatan" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Nol Pesan Diterima Pada Topic ActiveMQ Dalam Rentang Waktu" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:12.247921" level="INFO">[AMQ] Terbukti 0 pesan reload selama observasi 3.0s.</msg>
+<arg>3.0</arg>
+<status status="PASS" start="2026-11-17T15:12:09.246926" elapsed="3.001532"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:09.245645" elapsed="3.003355"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:13.573834" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:12.251877" elapsed="1.322693"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:13.576136" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:12:13.575247" elapsed="0.001420"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:14.026831" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:13.577139" elapsed="0.450792"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:12.250414" elapsed="1.777975"/>
+</kw>
+<tag>activemq</tag>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>negative</tag>
+<tag>P0</tag>
+<tag>TC-008</tag>
+<status status="PASS" start="2026-11-17T15:12:06.518854" elapsed="7.509903"/>
+</test>
+<test id="s1-t9" name="TC-009 Verifikasi Restriksi Hak Akses Approval Bagi Pengguna Non CCO" line="70">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:14.420053" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:14.061470" elapsed="0.359511"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:14.421612" elapsed="0.000502"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:14.060652" elapsed="0.361748"/>
+</kw>
+<kw name="Given Pengguna Super Admin Non CCO Berhasil Login Ke Portal JNS7" owner="anti_fraud_keywords">
+<kw name="UI Buka Portal Dan Login Sebagai Pengguna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:14.424875" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<arg>admin</arg>
+<doc>Performs true browser login via the portal login form.</doc>
+<status status="PASS" start="2026-11-17T15:12:14.424346" elapsed="0.000831"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:14.423289" elapsed="0.002255"/>
+</kw>
+<kw name="And Database Memiliki Konfigurasi Berstatus PENDING_APPROVAL Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:14.706698" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:12:14.948040" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: PENDING_APPROVAL) disiapkan.</msg>
+<arg>101</arg>
+<arg>PENDING_APPROVAL</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:12:14.427778" elapsed="0.521087"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:14.426567" elapsed="0.522769"/>
+</kw>
+<kw name="When Pengguna Non CCO Mengirimkan Permintaan Langsung Ke Endpoint Approve Dan Reject" owner="anti_fraud_keywords">
+<kw name="UI Verifikasi Tombol Approval Tidak Tersedia Untuk Non CCO" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:14.952575" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:12:15.677222" level="INFO">[UI ASSERT] Tombol Approve/Reject terbukti tersembunyi (0 elemen) untuk Non-CCO.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:14.951689" elapsed="0.725716"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:14.950286" elapsed="0.727291"/>
+</kw>
+<kw name="Then Sistem Menolak Permintaan Dengan Pesan Khusus Role CCO" owner="anti_fraud_keywords">
+<kw name="SSH Verifikasi Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:16.319790" level="INFO">[LOG DELTA] Log delta Laravel SUT bebas dari kesalahan fatal.</msg>
+<status status="PASS" start="2026-11-17T15:12:15.678255" elapsed="0.642812"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:15.677868" elapsed="0.643665"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:17.487447" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:16.323947" elapsed="1.164125"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:17.488778" elapsed="0.000539"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:17.924230" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:17.489709" elapsed="0.435305"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:16.322725" elapsed="1.602697"/>
+</kw>
+<tag>cms</tag>
+<tag>negative</tag>
+<tag>P0</tag>
+<tag>rbac</tag>
+<tag>security</tag>
+<tag>TC-009</tag>
+<status status="PASS" start="2026-11-17T15:12:14.059045" elapsed="3.866792"/>
+</test>
+<test id="s1-t10" name="TC-010 CCO Menyetujui Konfigurasi PENDING_APPROVAL Menjadi APPROVED" line="77">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:18.347180" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:17.957324" elapsed="0.390673"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:18.348619" elapsed="0.000524"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:17.956634" elapsed="0.392803"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:18.352072" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:12:18.352415" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:18.404449" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:18.405130" level="INFO">Created thread &lt;Thread(Thread-32 (__receiver_loop), started daemon 140248555353792)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:12:18.405379" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:12:18.472549" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:12:18.472762" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:12:18.351294" elapsed="0.121610"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:18.350303" elapsed="0.123056"/>
+</kw>
+<kw name="And Database Memiliki Konfigurasi Berstatus PENDING_APPROVAL Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:18.716754" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:12:18.986966" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: PENDING_APPROVAL) disiapkan.</msg>
+<arg>101</arg>
+<arg>PENDING_APPROVAL</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:12:18.474409" elapsed="0.513405"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:18.473833" elapsed="0.514459"/>
+</kw>
+<kw name="When Pengguna Role CCO Mengirimkan Aksi Persetujuan Konfigurasi" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Aksi Lifecycle Pada Baris Datatable" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:18.991443" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'ccouser'...</msg>
+<msg time="2026-11-17T15:12:22.257531" level="INFO">[UI LOGIN] Pengguna 'ccouser' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:12:23.093991" level="INFO">[DIALOG] Browser prompt: 'Approve config ini?'</msg>
+<msg time="2026-11-17T15:12:23.795493" level="INFO">[UI ACTION] Aksi 'approve' untuk client 101 diklik via tombol antarmuka.</msg>
+<arg>ccouser</arg>
+<arg>approve</arg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:18.990727" elapsed="4.804894"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:18.989271" elapsed="4.806481"/>
+</kw>
+<kw name="Then Status Konfigurasi Pada Database Berubah Menjadi APPROVED" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Konfigurasi Cocok Sempurna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:23.985385" level="INFO">--- START Komparasi Lengkap Database Konfigurasi | Length=1500 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:12:23.985602" level="INFO">{
+  "expected": {
+    "client_id": 101,
+    "approval_status": "APPROVED",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "rule_actions": {
+      "rate_limit": "ALERT + BLOCK",
+      "sequential": "ALERT + BLOCK",
+      "traffic": "ALERT",
+      "loss": "ALERT"
+    }
+  },
+  "actual": {
+    "id": 156,
+    "client_id": 101,
+    "client_name": "PT.DIGITAL VISION NUSANTARA",
+    "sender_id": 0,
+    "sender_name": "ALL",
+    "division_id": 0,
+    "division_name": "ALL",
+    "approval_status": "APPROVED",
+    "approved_by": "ccouser",
+    "effective_date": null,
+    "alert_emails": "[\"ops@test.com\"]",
+    "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+    "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+    "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+    "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+    "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "created_by": "admin",
+    "created_at": "2026-11-17 15:12:18",
+    "updated_at": "2026-11-17 15:12:23"
+  }
+}</msg>
+<msg time="2026-11-17T15:12:23.985750" level="INFO">--- END Komparasi Lengkap Database Konfigurasi ---</msg>
+<arg>101</arg>
+<arg>APPROVED</arg>
+<status status="PASS" start="2026-11-17T15:12:23.796638" elapsed="0.189314"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:23.796123" elapsed="0.190197"/>
+</kw>
+<kw name="And Kolom Approved By Terisi Nama Pengguna CCO" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Kolom Approved By Terisi" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>ccouser</arg>
+<status status="PASS" start="2026-11-17T15:12:23.988270" elapsed="0.205538"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:23.987160" elapsed="0.207138"/>
+</kw>
+<kw name="And Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:24.198035" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
+<arg>1</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:12:24.197164" elapsed="0.001358"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:24.195560" elapsed="0.003349"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:25.417560" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:24.201542" elapsed="1.216723"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:25.419846" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:12:25.418867" elapsed="0.001602"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:25.859799" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:25.420914" elapsed="0.439707"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:24.200178" elapsed="1.660828"/>
+</kw>
+<tag>activemq</tag>
+<tag>approval</tag>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>happy_path</tag>
+<tag>P0</tag>
+<tag>TC-010</tag>
+<status status="PASS" start="2026-11-17T15:12:17.955495" elapsed="7.905923"/>
+</test>
+<test id="s1-t11" name="TC-011 CCO Menolak Konfigurasi PENDING_APPROVAL Menjadi REJECTED" line="86">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:26.276387" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:25.893701" elapsed="0.383505"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:26.277757" elapsed="0.000541"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:25.892942" elapsed="0.385660"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:26.282783" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:12:26.283303" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:26.331800" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:26.332310" level="INFO">Created thread &lt;Thread(Thread-35 (__receiver_loop), started daemon 140248555353792)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:12:26.332484" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:12:26.373887" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:12:26.374176" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:12:26.281605" elapsed="0.092737"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:26.279868" elapsed="0.094639"/>
+</kw>
+<kw name="And Database Memiliki Konfigurasi Berstatus PENDING_APPROVAL Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:26.627044" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:12:26.830648" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: PENDING_APPROVAL) disiapkan.</msg>
+<arg>101</arg>
+<arg>PENDING_APPROVAL</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:12:26.375403" elapsed="0.456050"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:26.374939" elapsed="0.457118"/>
+</kw>
+<kw name="When Pengguna Role CCO Mengirimkan Aksi Penolakan Konfigurasi" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Aksi Lifecycle Pada Baris Datatable" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:26.834847" level="INFO">[UI LOGIN] Pengguna 'ccouser' sudah aktif.</msg>
+<msg time="2026-11-17T15:12:27.539299" level="INFO">[DIALOG] Browser prompt: 'Reject config ini?'</msg>
+<msg time="2026-11-17T15:12:28.194420" level="INFO">[UI ACTION] Aksi 'reject' untuk client 101 diklik via tombol antarmuka.</msg>
+<arg>ccouser</arg>
+<arg>reject</arg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:26.834121" elapsed="1.360462"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:26.833007" elapsed="1.361737"/>
+</kw>
+<kw name="Then Status Konfigurasi Pada Database Berubah Menjadi REJECTED" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Konfigurasi Cocok Sempurna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:28.397643" level="INFO">--- START Komparasi Lengkap Database Konfigurasi | Length=1495 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:12:28.397748" level="INFO">{
+  "expected": {
+    "client_id": 101,
+    "approval_status": "REJECTED",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "rule_actions": {
+      "rate_limit": "ALERT + BLOCK",
+      "sequential": "ALERT + BLOCK",
+      "traffic": "ALERT",
+      "loss": "ALERT"
+    }
+  },
+  "actual": {
+    "id": 157,
+    "client_id": 101,
+    "client_name": "PT.DIGITAL VISION NUSANTARA",
+    "sender_id": 0,
+    "sender_name": "ALL",
+    "division_id": 0,
+    "division_name": "ALL",
+    "approval_status": "REJECTED",
+    "approved_by": null,
+    "effective_date": null,
+    "alert_emails": "[\"ops@test.com\"]",
+    "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+    "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+    "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+    "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+    "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "created_by": "admin",
+    "created_at": "2026-11-17 15:12:26",
+    "updated_at": "2026-11-17 15:12:27"
+  }
+}</msg>
+<msg time="2026-11-17T15:12:28.397809" level="INFO">--- END Komparasi Lengkap Database Konfigurasi ---</msg>
+<arg>101</arg>
+<arg>REJECTED</arg>
+<status status="PASS" start="2026-11-17T15:12:28.195508" elapsed="0.202421"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:28.195168" elapsed="0.203010"/>
+</kw>
+<kw name="And Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:28.399704" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
+<arg>1</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:12:28.399354" elapsed="0.000492"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:28.398682" elapsed="0.001367"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:29.589335" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:28.401420" elapsed="1.188538"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:29.591467" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:12:29.590641" elapsed="0.001339"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:30.059944" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:29.592446" elapsed="0.468320"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:28.400684" elapsed="1.660501"/>
+</kw>
+<tag>activemq</tag>
+<tag>approval</tag>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>P1</tag>
+<tag>TC-011</tag>
+<status status="PASS" start="2026-11-17T15:12:25.891727" elapsed="4.169902"/>
+</test>
+<test id="s1-t12" name="TC-012 Reopen Konfigurasi Berstatus REJECTED Kembali Menjadi PENDING_APPROVAL" line="94">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:30.426661" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:30.093255" elapsed="0.334271"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:30.428162" elapsed="0.000488"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:30.092519" elapsed="0.336438"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:30.432224" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:12:30.432668" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:30.476525" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:30.477132" level="INFO">Created thread &lt;Thread(Thread-38 (__receiver_loop), started daemon 140248555353792)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:12:30.477384" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:12:30.535212" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:12:30.535542" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:12:30.431057" elapsed="0.104666"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:30.429908" elapsed="0.106061"/>
+</kw>
+<kw name="And Database Memiliki Konfigurasi Berstatus REJECTED Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:30.788626" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:12:31.023346" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: REJECTED) disiapkan.</msg>
+<arg>101</arg>
+<arg>REJECTED</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:12:30.537249" elapsed="0.486431"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:30.536590" elapsed="0.487264"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Aksi Reopen Konfigurasi" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Aksi Lifecycle Pada Baris Datatable" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:31.024836" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'admin'...</msg>
+<msg time="2026-11-17T15:12:33.805434" level="INFO">[UI LOGIN] Pengguna 'admin' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:12:34.712052" level="INFO">[DIALOG] Browser prompt: 'Reopen config ini ke PENDING_APPROVAL?'</msg>
+<msg time="2026-11-17T15:12:35.496242" level="INFO">[UI ACTION] Aksi 'reopen' untuk client 101 diklik via tombol antarmuka.</msg>
+<arg>admin</arg>
+<arg>reopen</arg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:31.024601" elapsed="4.471813"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:31.024227" elapsed="4.472417"/>
+</kw>
+<kw name="Then Status Konfigurasi Pada Database Berubah Menjadi PENDING_APPROVAL" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Konfigurasi Cocok Sempurna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:35.686074" level="INFO">--- START Komparasi Lengkap Database Konfigurasi | Length=1511 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:12:35.686183" level="INFO">{
+  "expected": {
+    "client_id": 101,
+    "approval_status": "PENDING_APPROVAL",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "rule_actions": {
+      "rate_limit": "ALERT + BLOCK",
+      "sequential": "ALERT + BLOCK",
+      "traffic": "ALERT",
+      "loss": "ALERT"
+    }
+  },
+  "actual": {
+    "id": 158,
+    "client_id": 101,
+    "client_name": "PT.DIGITAL VISION NUSANTARA",
+    "sender_id": 0,
+    "sender_name": "ALL",
+    "division_id": 0,
+    "division_name": "ALL",
+    "approval_status": "PENDING_APPROVAL",
+    "approved_by": null,
+    "effective_date": null,
+    "alert_emails": "[\"ops@test.com\"]",
+    "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+    "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+    "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+    "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+    "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "created_by": "admin",
+    "created_at": "2026-11-17 15:12:30",
+    "updated_at": "2026-11-17 15:12:34"
+  }
+}</msg>
+<msg time="2026-11-17T15:12:35.686236" level="INFO">--- END Komparasi Lengkap Database Konfigurasi ---</msg>
+<arg>101</arg>
+<arg>PENDING_APPROVAL</arg>
+<status status="PASS" start="2026-11-17T15:12:35.497614" elapsed="0.188702"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:35.497047" elapsed="0.189398"/>
+</kw>
+<kw name="And Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:35.687602" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
+<arg>1</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:12:35.687325" elapsed="0.000401"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:35.686798" elapsed="0.001084"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:36.907401" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:35.688847" elapsed="1.219196"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:36.909601" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:12:36.908725" elapsed="0.001440"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:37.346782" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:36.910610" elapsed="0.436989"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:35.688351" elapsed="1.659625"/>
+</kw>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>lifecycle</tag>
+<tag>P1</tag>
+<tag>reopen</tag>
+<tag>TC-012</tag>
+<status status="PASS" start="2026-11-17T15:12:30.091049" elapsed="7.257368"/>
+</test>
+<test id="s1-t13" name="TC-013 CCO Menonaktifkan Konfigurasi APPROVED Menjadi INACTIVE" line="102">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:37.736732" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:37.381611" elapsed="0.355847"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:37.737940" elapsed="0.000478"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:37.380965" elapsed="0.357696"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:37.740915" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:12:37.741196" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:37.800254" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:37.800804" level="INFO">Created thread &lt;Thread(Thread-41 (__receiver_loop), started daemon 140248315057856)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:12:37.800983" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:12:37.875779" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:12:37.876287" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:12:37.740305" elapsed="0.136280"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:37.739424" elapsed="0.137501"/>
+</kw>
+<kw name="And Database Memiliki Konfigurasi Berstatus APPROVED Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:38.321333" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:12:38.735807" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: APPROVED) disiapkan.</msg>
+<arg>101</arg>
+<arg>APPROVED</arg>
+<arg>admin</arg>
+<status status="PASS" start="2026-11-17T15:12:37.879145" elapsed="0.857440"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:37.877825" elapsed="0.859407"/>
+</kw>
+<kw name="When Pengguna Role CCO Mengirimkan Aksi Deaktivasi Konfigurasi" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Aksi Lifecycle Pada Baris Datatable" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:38.740677" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'ccouser'...</msg>
+<msg time="2026-11-17T15:12:41.438798" level="INFO">[UI LOGIN] Pengguna 'ccouser' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:12:42.314673" level="INFO">[DIALOG] Browser prompt: 'Deactivate config ini?'</msg>
+<msg time="2026-11-17T15:12:43.268455" level="INFO">[UI ACTION] Aksi 'deactivate' untuk client 101 diklik via tombol antarmuka.</msg>
+<arg>ccouser</arg>
+<arg>deactivate</arg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:38.739886" elapsed="4.528779"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:38.738361" elapsed="4.530501"/>
+</kw>
+<kw name="Then Status Konfigurasi Pada Database Berubah Menjadi INACTIVE" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Konfigurasi Cocok Sempurna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:43.487044" level="INFO">--- START Komparasi Lengkap Database Konfigurasi | Length=1495 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:12:43.487360" level="INFO">{
+  "expected": {
+    "client_id": 101,
+    "approval_status": "INACTIVE",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "rule_actions": {
+      "rate_limit": "ALERT + BLOCK",
+      "sequential": "ALERT + BLOCK",
+      "traffic": "ALERT",
+      "loss": "ALERT"
+    }
+  },
+  "actual": {
+    "id": 159,
+    "client_id": 101,
+    "client_name": "PT.DIGITAL VISION NUSANTARA",
+    "sender_id": 0,
+    "sender_name": "ALL",
+    "division_id": 0,
+    "division_name": "ALL",
+    "approval_status": "INACTIVE",
+    "approved_by": null,
+    "effective_date": null,
+    "alert_emails": "[\"ops@test.com\"]",
+    "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+    "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+    "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+    "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+    "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "created_by": "admin",
+    "created_at": "2026-11-17 15:12:38",
+    "updated_at": "2026-11-17 15:12:42"
+  }
+}</msg>
+<msg time="2026-11-17T15:12:43.487596" level="INFO">--- END Komparasi Lengkap Database Konfigurasi ---</msg>
+<arg>101</arg>
+<arg>INACTIVE</arg>
+<status status="PASS" start="2026-11-17T15:12:43.269691" elapsed="0.218136"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:43.269227" elapsed="0.219005"/>
+</kw>
+<kw name="And Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:43.491763" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
+<arg>1</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:12:43.490984" elapsed="0.001232"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:43.489376" elapsed="0.003403"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:44.715933" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:43.495807" elapsed="1.220839"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:44.718273" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:12:44.717350" elapsed="0.001481"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:45.426748" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:44.719331" elapsed="0.708310"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:43.494388" elapsed="1.933634"/>
+</kw>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>deactivate</tag>
+<tag>lifecycle</tag>
+<tag>P1</tag>
+<tag>TC-013</tag>
+<status status="PASS" start="2026-11-17T15:12:37.378413" elapsed="8.050028"/>
+</test>
+<test id="s1-t14" name="TC-014 Reopen Konfigurasi Berstatus INACTIVE Kembali Menjadi PENDING_APPROVAL" line="110">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:45.860812" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:45.460189" elapsed="0.401450"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:45.862249" elapsed="0.000478"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:45.459482" elapsed="0.403527"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:45.865680" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:12:45.866058" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:45.916064" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:45.916533" level="INFO">Created thread &lt;Thread(Thread-44 (__receiver_loop), started daemon 140248315057856)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:12:45.916695" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:12:45.973304" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:12:45.973740" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:12:45.864861" elapsed="0.109116"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:45.863861" elapsed="0.110453"/>
+</kw>
+<kw name="And Database Memiliki Konfigurasi Berstatus INACTIVE Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:46.219779" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:12:46.541756" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: INACTIVE) disiapkan.</msg>
+<arg>101</arg>
+<arg>INACTIVE</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:12:45.975999" elapsed="0.566670"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:45.975147" elapsed="0.567978"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Aksi Reopen Konfigurasi" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Aksi Lifecycle Pada Baris Datatable" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:46.546319" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'admin'...</msg>
+<msg time="2026-11-17T15:12:49.150109" level="INFO">[UI LOGIN] Pengguna 'admin' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:12:49.999271" level="INFO">[DIALOG] Browser prompt: 'Reopen config ini ke PENDING_APPROVAL?'</msg>
+<msg time="2026-11-17T15:12:50.769423" level="INFO">[UI ACTION] Aksi 'reopen' untuk client 101 diklik via tombol antarmuka.</msg>
+<arg>admin</arg>
+<arg>reopen</arg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:46.545612" elapsed="4.223978"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:46.544010" elapsed="4.225737"/>
+</kw>
+<kw name="Then Status Konfigurasi Pada Database Berubah Menjadi PENDING_APPROVAL" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Konfigurasi Cocok Sempurna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:51.022727" level="INFO">--- START Komparasi Lengkap Database Konfigurasi | Length=1511 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:12:51.022890" level="INFO">{
+  "expected": {
+    "client_id": 101,
+    "approval_status": "PENDING_APPROVAL",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "rule_actions": {
+      "rate_limit": "ALERT + BLOCK",
+      "sequential": "ALERT + BLOCK",
+      "traffic": "ALERT",
+      "loss": "ALERT"
+    }
+  },
+  "actual": {
+    "id": 160,
+    "client_id": 101,
+    "client_name": "PT.DIGITAL VISION NUSANTARA",
+    "sender_id": 0,
+    "sender_name": "ALL",
+    "division_id": 0,
+    "division_name": "ALL",
+    "approval_status": "PENDING_APPROVAL",
+    "approved_by": null,
+    "effective_date": null,
+    "alert_emails": "[\"ops@test.com\"]",
+    "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+    "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+    "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+    "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+    "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "created_by": "admin",
+    "created_at": "2026-11-17 15:12:46",
+    "updated_at": "2026-11-17 15:12:50"
+  }
+}</msg>
+<msg time="2026-11-17T15:12:51.022997" level="INFO">--- END Komparasi Lengkap Database Konfigurasi ---</msg>
+<arg>101</arg>
+<arg>PENDING_APPROVAL</arg>
+<status status="PASS" start="2026-11-17T15:12:50.770712" elapsed="0.252481"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:50.770164" elapsed="0.253301"/>
+</kw>
+<kw name="And Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:51.025200" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
+<arg>1</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:12:51.024776" elapsed="0.000579"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:51.024068" elapsed="0.001491"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:52.338128" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:51.027005" elapsed="1.311813"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:52.340354" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:12:52.339536" elapsed="0.001314"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:52.811032" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:52.341315" elapsed="0.470739"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:51.026312" elapsed="1.786380"/>
+</kw>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>lifecycle</tag>
+<tag>P1</tag>
+<tag>reopen</tag>
+<tag>TC-014</tag>
+<status status="PASS" start="2026-11-17T15:12:45.458207" elapsed="7.355119"/>
+</test>
+<test id="s1-t15" name="TC-015 Validasi Penolakan Transisi Status Ilegal Pada State Machine Konfigurasi" line="118">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:53.262341" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:52.853446" elapsed="0.409713"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:12:53.263697" elapsed="0.000515"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:52.852772" elapsed="0.411720"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:53.268304" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:12:53.268745" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:53.316051" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:12:53.316650" level="INFO">Created thread &lt;Thread(Thread-47 (__receiver_loop), started daemon 140248315057856)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:12:53.316867" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:12:53.372833" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:12:53.373571" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:12:53.267212" elapsed="0.106807"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:53.265494" elapsed="0.108967"/>
+</kw>
+<kw name="And Database Memiliki Konfigurasi Anti Fraud Berstatus DRAFT Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:53.635722" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:12:53.886974" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: DRAFT) disiapkan.</msg>
+<arg>101</arg>
+<arg>DRAFT</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:12:53.379315" elapsed="0.508551"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:53.375374" elapsed="0.512956"/>
+</kw>
+<kw name="And Snapshot Baseline Konfigurasi Client Telah Disimpan" owner="anti_fraud_keywords">
+<kw name="DB Ambil Snapshot Konfigurasi Client" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:54.088870" level="INFO">--- START Snapshot Konfigurasi Client 101 | Length=1078 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:12:54.089161" level="INFO">{
+  "id": 161,
+  "client_id": 101,
+  "client_name": "PT.DIGITAL VISION NUSANTARA",
+  "sender_id": 0,
+  "sender_name": "ALL",
+  "division_id": 0,
+  "division_name": "ALL",
+  "approval_status": "DRAFT",
+  "approved_by": null,
+  "effective_date": null,
+  "alert_emails": "[\"ops@test.com\"]",
+  "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+  "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+  "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+  "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+  "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+  "enable_rate_limit": 1,
+  "enable_sequential": 1,
+  "enable_traffic_anomaly": 1,
+  "enable_loss_monitoring": 1,
+  "created_by": "admin",
+  "created_at": "2026-11-17 15:12:53",
+  "updated_at": "2026-11-17 15:12:53"
+}</msg>
+<msg time="2026-11-17T15:12:54.089338" level="INFO">--- END Snapshot Konfigurasi Client 101 ---</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:53.890276" elapsed="0.199302"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:53.889242" elapsed="0.200696"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Aksi Transisi Ilegal Ke Approved" owner="anti_fraud_keywords">
+<kw name="UI Verifikasi Matriks Aksi Ketersediaan State Machine" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:54.093292" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:12:54.778841" level="INFO">[UI ASSERT] Matriks ketersediaan aksi UI terbukti taat pada state machine.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:12:54.092439" elapsed="0.686538"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:54.090894" elapsed="0.688254"/>
+</kw>
+<kw name="Then Sistem Menolak Transisi Status Ilegal Tersebut" owner="anti_fraud_keywords">
+<kw name="SSH Verifikasi Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:55.440753" level="INFO">[LOG DELTA] Log delta Laravel SUT bebas dari kesalahan fatal.</msg>
+<status status="PASS" start="2026-11-17T15:12:54.780142" elapsed="0.661927"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:54.779543" elapsed="0.662964"/>
+</kw>
+<kw name="And Seluruh Kolom Konfigurasi Baseline Terbukti Tidak Mengalami Perubahan" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Konfigurasi Cocok Sempurna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:55.645365" level="INFO">--- START Komparasi Lengkap Database Konfigurasi | Length=1489 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:12:55.645623" level="INFO">{
+  "expected": {
+    "client_id": 101,
+    "approval_status": "DRAFT",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "rule_actions": {
+      "rate_limit": "ALERT + BLOCK",
+      "sequential": "ALERT + BLOCK",
+      "traffic": "ALERT",
+      "loss": "ALERT"
+    }
+  },
+  "actual": {
+    "id": 161,
+    "client_id": 101,
+    "client_name": "PT.DIGITAL VISION NUSANTARA",
+    "sender_id": 0,
+    "sender_name": "ALL",
+    "division_id": 0,
+    "division_name": "ALL",
+    "approval_status": "DRAFT",
+    "approved_by": null,
+    "effective_date": null,
+    "alert_emails": "[\"ops@test.com\"]",
+    "rate_limit_windows": "[{\"name\":\"W1\",\"val\":10,\"unit\":\"MINUTE\",\"loc\":10,\"intl\":4,\"scope\":\"DOMESTIC\"}]",
+    "seq_windows": "[{\"name\":\"W1\",\"val\":15,\"unit\":\"MINUTE\",\"loc\":25,\"intl\":10,\"scope\":\"DOMESTIC\"}]",
+    "loss_thresholds": "{\"ISAT\":[{\"name\":\"W1\",\"val\":1,\"unit\":\"HOUR\",\"loss\":0}]}",
+    "rule_actions": "{\"rate_limit\":\"ALERT + BLOCK\",\"sequential\":\"ALERT + BLOCK\",\"traffic\":\"ALERT\",\"loss\":\"ALERT\"}",
+    "traffic_config": "{\"threshold_pct\":50,\"window\":{\"val\":90,\"unit\":\"DAY\"},\"min_baseline\":24}",
+    "enable_rate_limit": 1,
+    "enable_sequential": 1,
+    "enable_traffic_anomaly": 1,
+    "enable_loss_monitoring": 1,
+    "created_by": "admin",
+    "created_at": "2026-11-17 15:12:53",
+    "updated_at": "2026-11-17 15:12:53"
+  }
+}</msg>
+<msg time="2026-11-17T15:12:55.645855" level="INFO">--- END Komparasi Lengkap Database Konfigurasi ---</msg>
+<arg>101</arg>
+<arg>DRAFT</arg>
+<status status="PASS" start="2026-11-17T15:12:55.444585" elapsed="0.201546"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:55.443482" elapsed="0.203031"/>
+</kw>
+<kw name="And Ketiadaan Sinyal Reload Pada ActiveMQ Topic Terbukti Selama Rentang Waktu Pengamatan" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Nol Pesan Diterima Pada Topic ActiveMQ Dalam Rentang Waktu" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:58.649323" level="INFO">[AMQ] Terbukti 0 pesan reload selama observasi 3.0s.</msg>
+<arg>3.0</arg>
+<status status="PASS" start="2026-11-17T15:12:55.648587" elapsed="3.001056"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:55.647496" elapsed="3.002421"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:59.828599" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:58.651859" elapsed="1.177470"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:12:59.831261" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:12:59.830072" elapsed="0.001976"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:00.307152" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:12:59.832949" elapsed="0.475101"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:12:58.650925" elapsed="1.657661"/>
+</kw>
+<tag>cms</tag>
+<tag>config</tag>
+<tag>negative</tag>
+<tag>P1</tag>
+<tag>state_machine</tag>
+<tag>TC-015</tag>
+<status status="PASS" start="2026-11-17T15:12:52.851495" elapsed="7.457746"/>
+</test>
+<test id="s1-t16" name="TC-016 Eksekusi Tombol SYNC Menyiarkan Sinyal Reload Anti Fraud Ke ActiveMQ Topic" line="128">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:00.756318" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:00.346476" elapsed="0.410713"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:00.757745" elapsed="0.000538"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:00.345943" elapsed="0.412636"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:00.761932" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:13:00.762289" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:00.816123" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:00.816620" level="INFO">Created thread &lt;Thread(Thread-52 (__receiver_loop), started daemon 140248315057856)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:13:00.816773" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:13:00.871626" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:13:00.872135" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:13:00.761039" elapsed="0.111378"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:00.759686" elapsed="0.113063"/>
 </kw>
 <kw name="When Pengguna Super Admin Mengeksekusi Tombol SYNC Konfigurasi" owner="anti_fraud_keywords">
-<kw name="Pengguna Berhasil Login Ke Portal JNS7" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:41.391699" level="INFO">[HTTP] Pengguna 'admin' berhasil login ke portal JNS7 Mobile Broadcast.</msg>
-<arg>admin</arg>
-<status status="PASS" start="2026-11-17T09:46:40.075112" elapsed="1.316878"/>
+<kw name="UI Eksekusi Tombol SYNC Konfigurasi" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:00.875329" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:13:01.538241" level="INFO">[DIALOG] Browser prompt: 'Kirim SYNC config (reload anti-fraud) untuk semua client?'</msg>
+<msg time="2026-11-17T15:13:02.309519" level="INFO">[UI ACTION] Tombol SYNC config diklik dan konfirmasi diterima.</msg>
+<status status="PASS" start="2026-11-17T15:13:00.874864" elapsed="1.434820"/>
 </kw>
-<kw name="Kirim Permintaan SYNC Konfigurasi" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:42.430008" level="INFO">[HTTP] Tombol SYNC config berhasil dieksekusi.</msg>
-<arg>admin</arg>
-<status status="PASS" start="2026-11-17T09:46:41.392484" elapsed="1.037869"/>
-</kw>
-<status status="PASS" start="2026-11-17T09:46:40.073863" elapsed="2.356738"/>
+<status status="PASS" start="2026-11-17T15:13:00.873818" elapsed="1.436017"/>
 </kw>
 <kw name="Then Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
-<kw name="Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:42.432867" level="INFO">--- START Actual Messages Received on ActiveMQ Topic | Length=56 chars | Parts=1 ---</msg>
-<msg time="2026-11-17T09:46:42.433079" level="INFO">[
-  "reload anti-fraud",
-  "reload caffein anti-fraud"
-]</msg>
-<msg time="2026-11-17T09:46:42.433215" level="INFO">--- END Actual Messages Received on ActiveMQ Topic ---</msg>
-<msg time="2026-11-17T09:46:42.433300" level="INFO">[AMQ] Terbukti pesan 'reload anti-fraud' diterima pada ActiveMQ Topic (1 pesan).</msg>
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:02.311041" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
 <arg>1</arg>
-<arg>5.0</arg>
-<status status="PASS" start="2026-11-17T09:46:42.432284" elapsed="0.001161"/>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:13:02.310768" elapsed="0.000422"/>
 </kw>
-<status status="PASS" start="2026-11-17T09:46:42.431367" elapsed="0.002282"/>
+<status status="PASS" start="2026-11-17T15:13:02.310275" elapsed="0.001051"/>
 </kw>
 <kw name="And Audit Log SYNC_CONFIG Tercatat Pada Database" owner="anti_fraud_keywords">
-<kw name="Verifikasi Audit Log Tercatat" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:42.637583" level="INFO">--- START Audit Log Row (SYNC_CONFIG) | Length=227 chars | Parts=1 ---</msg>
-<msg time="2026-11-17T09:46:42.637827" level="INFO">{
-  "id": 91,
-  "config_id": 0,
-  "target_client_id": null,
-  "target_value": null,
-  "actor": "admin",
-  "action": "SYNC_CONFIG",
-  "old_value": null,
-  "new_value": "reload anti-fraud",
-  "created_at": "2026-11-17 09:46:41"
-}</msg>
-<msg time="2026-11-17T09:46:42.637995" level="INFO">--- END Audit Log Row (SYNC_CONFIG) ---</msg>
+<kw name="DB Verifikasi Audit Log Tercatat" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:02.556730" level="INFO">[DB AUDIT] Audit log 'SYNC_CONFIG' tervalidasi di DB.</msg>
 <arg>0</arg>
 <arg>SYNC_CONFIG</arg>
 <arg>admin</arg>
-<status status="PASS" start="2026-11-17T09:46:42.435182" elapsed="0.203282"/>
+<status status="PASS" start="2026-11-17T15:13:02.312058" elapsed="0.245158"/>
 </kw>
-<status status="PASS" start="2026-11-17T09:46:42.434285" elapsed="0.204427"/>
+<status status="PASS" start="2026-11-17T15:13:02.311643" elapsed="0.245974"/>
 </kw>
 <kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
-<kw name="Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:43.365583" level="INFO">[NETWORK] Konektivitas ActiveMQ pada Host 60 berhasil dipulihkan.</msg>
-<status status="PASS" start="2026-11-17T09:46:42.640301" elapsed="0.725617"/>
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:04.675291" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:02.559354" elapsed="2.116659"/>
 </kw>
-<kw name="Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:43.367022" level="INFO">Sending frame: 'DISCONNECT'</msg>
-<msg time="2026-11-17T09:46:43.367351" level="INFO">[AMQ] Seluruh koneksi STOMP ditutup.</msg>
-<status status="PASS" start="2026-11-17T09:46:43.366389" elapsed="0.001141"/>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:04.677470" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:13:04.676660" elapsed="0.001312"/>
 </kw>
-<kw name="Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
-<msg time="2026-11-17T09:46:43.725939" level="INFO">[DB] Data uji berhasil dibersihkan dari database broadcast.</msg>
-<doc>Cleans up test records for client 101, 9999, and specific test numbers.</doc>
-<status status="PASS" start="2026-11-17T09:46:43.367857" elapsed="0.358882"/>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:05.056806" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:04.678463" elapsed="0.379578"/>
 </kw>
-<status status="PASS" start="2026-11-17T09:46:42.639741" elapsed="1.087269"/>
+<status status="PASS" start="2026-11-17T15:13:02.558586" elapsed="2.499984"/>
 </kw>
 <tag>activemq</tag>
 <tag>cms</tag>
@@ -100,27 +1736,1166 @@
 <tag>P0</tag>
 <tag>sync</tag>
 <tag>TC-016</tag>
-<status status="PASS" start="2026-11-17T09:46:39.294573" elapsed="4.432766"/>
+<status status="PASS" start="2026-11-17T15:13:00.344992" elapsed="4.713958"/>
+</test>
+<test id="s1-t17" name="TC-017 Pengujian Independen Transisi Siklus Approval Memicu Pesan Reload Ke ActiveMQ Topic" line="135">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:05.477724" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:05.092405" elapsed="0.386176"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:05.479205" elapsed="0.000506"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:05.091802" elapsed="0.388201"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:05.482651" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:13:05.482954" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:05.533381" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:05.533895" level="INFO">Created thread &lt;Thread(Thread-55 (__receiver_loop), started daemon 140248315057856)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:13:05.534220" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:13:05.582833" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:13:05.583237" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:13:05.481905" elapsed="0.101512"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:05.480902" elapsed="0.102732"/>
+</kw>
+<kw name="And Database Memiliki Konfigurasi Berstatus PENDING_APPROVAL Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Konfigurasi Uji Dengan Status" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:05.835519" level="INFO">[DB] Client 101 dipastikan belum memiliki konfigurasi anti-fraud.</msg>
+<msg time="2026-11-17T15:13:06.142076" level="INFO">[DB FIXTURE] Konfigurasi uji client 101 (status: PENDING_APPROVAL) disiapkan.</msg>
+<arg>101</arg>
+<arg>PENDING_APPROVAL</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:13:05.584890" elapsed="0.558088"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:05.584253" elapsed="0.559177"/>
+</kw>
+<kw name="When Pengguna Role CCO Menjalankan Transisi Siklus Approval Pada Lingkungan Eksklusif" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Aksi Lifecycle Pada Baris Datatable" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:06.146744" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'ccouser'...</msg>
+<msg time="2026-11-17T15:13:09.636992" level="INFO">[UI LOGIN] Pengguna 'ccouser' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:13:10.516589" level="INFO">[DIALOG] Browser prompt: 'Approve config ini?'</msg>
+<msg time="2026-11-17T15:13:11.381394" level="INFO">[UI ACTION] Aksi 'approve' untuk client 101 diklik via tombol antarmuka.</msg>
+<arg>ccouser</arg>
+<arg>approve</arg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:13:06.145779" elapsed="5.235788"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:06.144357" elapsed="5.237383"/>
+</kw>
+<kw name="Then Sinyal Reload Anti Fraud Diterima Tepat Satu Kali Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:11.382875" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
+<arg>1</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:13:11.382623" elapsed="0.000352"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:11.382169" elapsed="0.000973"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:12.674656" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:11.384109" elapsed="1.291201"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:12.676761" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:13:12.675889" elapsed="0.001437"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:13.267570" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:12.677757" elapsed="0.590689"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:11.383608" elapsed="1.885222"/>
+</kw>
+<tag>activemq</tag>
+<tag>approval</tag>
+<tag>cms</tag>
+<tag>exclusive</tag>
+<tag>P0</tag>
+<tag>TC-017</tag>
+<status status="PASS" start="2026-11-17T15:13:05.090639" elapsed="8.178633"/>
+</test>
+<test id="s1-t18" name="TC-018 Tambah Whitelist MSISDN Berhasil Disimpan Dan Menyiarkan Reload ActiveMQ" line="142">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:13.666857" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:13.301747" elapsed="0.366283"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:13.668983" elapsed="0.000813"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:13.301039" elapsed="0.369318"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:13.674606" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:13:13.675120" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:13.715520" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:13.716002" level="INFO">Created thread &lt;Thread(Thread-58 (__receiver_loop), started daemon 140248315057856)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:13:13.716195" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:13:13.775332" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:13:13.775576" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:13:13.673460" elapsed="0.102253"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:13.671763" elapsed="0.104109"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Permintaan Penambahan Whitelist MSISDN" owner="anti_fraud_keywords">
+<kw name="UI Tambah Whitelist Target" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:13.777133" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'admin'...</msg>
+<msg time="2026-11-17T15:13:16.935611" level="INFO">[UI LOGIN] Pengguna 'admin' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:13:18.213666" level="INFO">[UI ACTION] Whitelist msisdn:+628123456789 ditambahkan via form web.</msg>
+<arg>msisdn</arg>
+<arg>101</arg>
+<arg>+628123456789</arg>
+<arg>Whitelist MSISDN E2E</arg>
+<status status="PASS" start="2026-11-17T15:13:13.776774" elapsed="4.437018"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:13.776337" elapsed="4.437582"/>
+</kw>
+<kw name="Then Data Whitelist MSISDN Tersimpan Pada Database Dengan Status Aktif" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Whitelist Database" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>msisdn</arg>
+<arg>+628123456789</arg>
+<arg>1</arg>
+<status status="PASS" start="2026-11-17T15:13:18.215828" elapsed="0.221632"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:18.214306" elapsed="0.223342"/>
+</kw>
+<kw name="And Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:18.439038" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
+<arg>1</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:13:18.438708" elapsed="0.000490"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:18.438076" elapsed="0.001311"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:19.587464" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:18.440629" elapsed="1.147430"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:19.589470" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:13:19.588675" elapsed="0.001321"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:20.196884" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:19.590470" elapsed="0.607245"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:18.439976" elapsed="1.758232"/>
+</kw>
+<tag>activemq</tag>
+<tag>cms</tag>
+<tag>happy_path</tag>
+<tag>msisdn</tag>
+<tag>P0</tag>
+<tag>TC-018</tag>
+<tag>whitelist</tag>
+<status status="PASS" start="2026-11-17T15:13:13.299819" elapsed="6.898851"/>
+</test>
+<test id="s1-t19" name="TC-019 Tambah Whitelist Prefix Berhasil Disimpan Dan Menyiarkan Reload ActiveMQ" line="149">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:20.631025" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:20.234240" elapsed="0.397884"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:20.632733" elapsed="0.000664"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:20.233422" elapsed="0.400308"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:20.636860" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:13:20.637361" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:20.693253" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:20.693857" level="INFO">Created thread &lt;Thread(Thread-61 (__receiver_loop), started daemon 140248315057856)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:13:20.694055" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:13:20.736767" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:13:20.737333" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:13:20.636066" elapsed="0.101650"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:20.634928" elapsed="0.103116"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Permintaan Penambahan Whitelist Prefix" owner="anti_fraud_keywords">
+<kw name="UI Tambah Whitelist Target" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:20.740904" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:13:22.107170" level="INFO">[UI ACTION] Whitelist prefix:0812999 ditambahkan via form web.</msg>
+<arg>prefix</arg>
+<arg>101</arg>
+<arg>0812999</arg>
+<arg>Whitelist Prefix E2E</arg>
+<status status="PASS" start="2026-11-17T15:13:20.740278" elapsed="1.367094"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:20.738908" elapsed="1.368717"/>
+</kw>
+<kw name="Then Data Whitelist Prefix Tersimpan Pada Database Dengan Status Aktif" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Whitelist Database" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>prefix</arg>
+<arg>0812999</arg>
+<arg>1</arg>
+<status status="PASS" start="2026-11-17T15:13:22.108708" elapsed="0.198308"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:22.108110" elapsed="0.199204"/>
+</kw>
+<kw name="And Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:22.308776" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
+<arg>1</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:13:22.308445" elapsed="0.000471"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:22.307816" elapsed="0.001323"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:23.535744" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:22.310458" elapsed="1.225952"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:23.537803" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:13:23.536982" elapsed="0.001383"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:23.987369" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:23.538794" elapsed="0.449441"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:22.309779" elapsed="1.678830"/>
+</kw>
+<tag>activemq</tag>
+<tag>cms</tag>
+<tag>happy_path</tag>
+<tag>P0</tag>
+<tag>prefix</tag>
+<tag>TC-019</tag>
+<tag>whitelist</tag>
+<status status="PASS" start="2026-11-17T15:13:20.231394" elapsed="3.757576"/>
+</test>
+<test id="s1-t20" name="TC-020 Validasi Penolakan Format MSISDN Dan Prefix Tidak Sesuai Aturan" line="156">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:24.435747" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:24.020637" elapsed="0.415953"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:24.437190" elapsed="0.000471"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:24.019809" elapsed="0.418136"/>
+</kw>
+<kw name="Given Database Memastikan Data Uji Whitelist Bersih" owner="anti_fraud_keywords">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:24.786523" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:24.439867" elapsed="0.347449"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:24.438818" elapsed="0.348920"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Penambahan Whitelist Dengan Format Tidak Sesuai Aturan" owner="anti_fraud_keywords">
+<kw name="UI Tambah Whitelist Format Tidak Valid Dan Pastikan Ditolak" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:24.795043" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:13:26.018488" level="INFO">[UI ACTION] Whitelist msisdn:INVALID_CHARS ditambahkan via form web.</msg>
+<status status="PASS" start="2026-11-17T15:13:24.789947" elapsed="1.228751"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:24.788730" elapsed="1.230126"/>
+</kw>
+<kw name="Then Sistem Menolak Penambahan Whitelist Tersebut Dengan Pesan Validasi" owner="anti_fraud_keywords">
+<kw name="UI Verifikasi Penolakan Form Whitelist Tertampil" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:26.052654" level="INFO">[UI ASSERT] Penolakan whitelist di DOM: ×
+          MSISDN tidak valid. Gunakan format 08xxxxxxxxxx atau 62xxxxxxxxxx</msg>
+<status status="PASS" start="2026-11-17T15:13:26.019849" elapsed="0.032945"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:26.019287" elapsed="0.033644"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:27.230188" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:26.053882" elapsed="1.177090"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:27.231737" elapsed="0.000606"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:27.709883" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:27.232752" elapsed="0.478132"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:26.053404" elapsed="1.657897"/>
+</kw>
+<tag>cms</tag>
+<tag>negative</tag>
+<tag>P1</tag>
+<tag>TC-020</tag>
+<tag>validation</tag>
+<tag>whitelist</tag>
+<status status="PASS" start="2026-11-17T15:13:24.018603" elapsed="3.693051"/>
+</test>
+<test id="s1-t21" name="TC-021 Validasi Penolakan Duplikasi Target Aktif Dan Reaktivasi Target Nonaktif" line="162">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:28.135665" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:27.746337" elapsed="0.390105"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:28.136984" elapsed="0.000561"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:27.745646" elapsed="0.392193"/>
+</kw>
+<kw name="Given Database Memiliki Data Whitelist Nonaktif Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Whitelist Uji" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>msisdn</arg>
+<arg>+628123456789</arg>
+<arg>0</arg>
+<status status="PASS" start="2026-11-17T15:13:28.139897" elapsed="0.292626"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:28.138710" elapsed="0.294281"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Penambahan Whitelist Untuk Target Yang Sama" owner="anti_fraud_keywords">
+<kw name="UI Tambah Whitelist Target" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:28.436959" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:13:29.681299" level="INFO">[UI ACTION] Whitelist msisdn:+628123456789 ditambahkan via form web.</msg>
+<arg>msisdn</arg>
+<arg>101</arg>
+<arg>+628123456789</arg>
+<arg>Reaktivasi Whitelist Target</arg>
+<status status="PASS" start="2026-11-17T15:13:28.435914" elapsed="1.245519"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:28.434206" elapsed="1.247372"/>
+</kw>
+<kw name="Then Status Whitelist Pada Database Berubah Kembali Menjadi Aktif" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Whitelist Database" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>msisdn</arg>
+<arg>+628123456789</arg>
+<arg>1</arg>
+<status status="PASS" start="2026-11-17T15:13:29.682447" elapsed="0.210514"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:29.681919" elapsed="0.211271"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Kembali Penambahan Whitelist Target Yang Telah Aktif" owner="anti_fraud_keywords">
+<kw name="UI Tambah Whitelist Target" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:29.894669" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:13:30.996974" level="INFO">[UI ACTION] Whitelist msisdn:+628123456789 ditambahkan via form web.</msg>
+<arg>msisdn</arg>
+<arg>101</arg>
+<arg>+628123456789</arg>
+<arg>Duplikasi Target Aktif</arg>
+<status status="PASS" start="2026-11-17T15:13:29.894326" elapsed="1.102820"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:29.893645" elapsed="1.103634"/>
+</kw>
+<kw name="Then Sistem Menolak Duplikasi Target Whitelist Aktif" owner="anti_fraud_keywords">
+<kw name="SSH Verifikasi Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:31.933322" level="INFO">[LOG DELTA] Log delta Laravel SUT bebas dari kesalahan fatal.</msg>
+<status status="PASS" start="2026-11-17T15:13:30.998008" elapsed="0.936507"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:30.997574" elapsed="0.937321"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:33.258735" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:31.938014" elapsed="1.321395"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:33.260170" elapsed="0.000590"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:33.706766" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:33.261467" elapsed="0.446117"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:31.936359" elapsed="1.771611"/>
+</kw>
+<tag>cms</tag>
+<tag>P1</tag>
+<tag>reactivation</tag>
+<tag>regression</tag>
+<tag>TC-021</tag>
+<tag>whitelist</tag>
+<status status="PASS" start="2026-11-17T15:13:27.744443" elapsed="5.963979"/>
+</test>
+<test id="s1-t22" name="TC-022 Deaktivasi Dan Reaktivasi Entri Whitelist Serta Verifikasi Reload ActiveMQ" line="170">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:34.266747" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:33.754622" elapsed="0.512946"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:34.268164" elapsed="0.000483"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:33.747255" elapsed="0.521680"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Topic Command" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:34.271661" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:13:34.272907" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:34.313413" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:34.313975" level="INFO">Created thread &lt;Thread(Thread-70 (__receiver_loop), started daemon 140248323450560)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:13:34.314202" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:13:34.366638" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:13:34.366872" level="INFO">[AMQ] Subscriber STOMP aktif pada topic /topic/jns.topic.command (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:13:34.270906" elapsed="0.096135"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:34.269818" elapsed="0.097457"/>
+</kw>
+<kw name="And Database Memiliki Data Whitelist MSISDN Aktif Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Whitelist Uji" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>msisdn</arg>
+<arg>+628123456789</arg>
+<arg>1</arg>
+<status status="PASS" start="2026-11-17T15:13:34.367998" elapsed="0.524587"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:34.367643" elapsed="0.525416"/>
+</kw>
+<kw name="When Pengguna Super Admin Mengirimkan Aksi Deaktivasi Whitelist" owner="anti_fraud_keywords">
+<kw name="UI Toggle Status Whitelist Pada Datatable" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:34.896487" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:13:35.527367" level="INFO">[DIALOG] Browser prompt: 'Nonaktifkan whitelist ini?'</msg>
+<msg time="2026-11-17T15:13:36.448474" level="INFO">[UI ACTION] Whitelist +628123456789 ditoggle ke 'deactivate' via UI.</msg>
+<arg>+628123456789</arg>
+<arg>deactivate</arg>
+<status status="PASS" start="2026-11-17T15:13:34.895849" elapsed="1.552756"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:34.894293" elapsed="1.554441"/>
+</kw>
+<kw name="Then Status Whitelist Pada Database Berubah Menjadi Nonaktif" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Whitelist Database" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>msisdn</arg>
+<arg>+628123456789</arg>
+<arg>0</arg>
+<status status="PASS" start="2026-11-17T15:13:36.449606" elapsed="0.201331"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:36.449100" elapsed="0.202118"/>
+</kw>
+<kw name="And Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Pesan Reload Diterima Pada Topic ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:36.652802" level="INFO">[AMQ TOPIC MSG] reload anti-fraud</msg>
+<arg>1</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:13:36.652505" elapsed="0.000414"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:36.651739" elapsed="0.001328"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:37.824928" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:36.654148" elapsed="1.171653"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:37.827499" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:13:37.826636" elapsed="0.001377"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:38.467050" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:37.828524" elapsed="0.639354"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:36.653659" elapsed="1.814724"/>
+</kw>
+<tag>activemq</tag>
+<tag>cms</tag>
+<tag>P1</tag>
+<tag>TC-022</tag>
+<tag>toggle</tag>
+<tag>whitelist</tag>
+<status status="PASS" start="2026-11-17T15:13:33.746243" elapsed="4.722533"/>
+</test>
+<test id="s1-t23" name="TC-023 Verifikasi Tampilan Daftar Blocklist Aktif Beserta Rincian Rule Fraud" line="178">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:38.867947" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:38.503815" elapsed="0.364651"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:38.868787" elapsed="0.000270"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:38.502861" elapsed="0.366396"/>
+</kw>
+<kw name="Given Database Memiliki Data Block State Aktif Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Block State Uji" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:39.144915" level="INFO">[DB] Block state aktif untuk client 101 (target: 6281200000001) disiapkan.</msg>
+<arg>101</arg>
+<arg>6281200000001</arg>
+<arg>MSISDN</arg>
+<arg>ACTIVE</arg>
+<status status="PASS" start="2026-11-17T15:13:38.870259" elapsed="0.275579"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:38.869671" elapsed="0.276639"/>
+</kw>
+<kw name="When Pengguna Role CCO Membuka Halaman Blocklist" owner="anti_fraud_keywords">
+<kw name="UI Buka Halaman Blocklist Dan Observasi Otorisasi" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:39.150212" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'ccouser'...</msg>
+<msg time="2026-11-17T15:13:42.051119" level="INFO">[UI LOGIN] Pengguna 'ccouser' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:13:42.615347" level="INFO">[UI ACTION &amp; ASSERT] Halaman blocklist CCO memuat tombol unblock dan modal.</msg>
+<arg>cco</arg>
+<status status="PASS" start="2026-11-17T15:13:39.149336" elapsed="3.466167"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:39.147440" elapsed="3.468195"/>
+</kw>
+<kw name="Then Halaman Menampilkan Target Fraud Aktif Beserta Rincian Rule Dan Status" owner="anti_fraud_keywords">
+<kw name="UI Buka Halaman Blocklist Dan Observasi Otorisasi" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:42.616792" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'admin'...</msg>
+<msg time="2026-11-17T15:13:45.715931" level="INFO">[UI LOGIN] Pengguna 'admin' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:13:46.304044" level="INFO">[UI ACTION &amp; ASSERT] Halaman blocklist Non-CCO terbukti menyembunyikan tombol unblock.</msg>
+<arg>non_cco</arg>
+<status status="PASS" start="2026-11-17T15:13:42.616564" elapsed="3.687629"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:42.616011" elapsed="3.688309"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:47.467489" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:46.305067" elapsed="1.163148"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:47.468811" elapsed="0.000524"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:47.936717" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:47.469790" elapsed="0.467490"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:46.304694" elapsed="1.632833"/>
+</kw>
+<tag>blocklist</tag>
+<tag>cms</tag>
+<tag>happy_path</tag>
+<tag>monitoring</tag>
+<tag>P0</tag>
+<tag>TC-023</tag>
+<status status="PASS" start="2026-11-17T15:13:38.500548" elapsed="9.437236"/>
+</test>
+<test id="s1-t24" name="TC-024 CCO Melakukan Unblock Target Aktif Dan Verifikasi Exact JSON Pada ActiveMQ Queue" line="184">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:48.331779" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:47.954901" elapsed="0.377764"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:48.333272" elapsed="0.000492"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:47.954494" elapsed="0.379709"/>
+</kw>
+<kw name="Given Subscriber ActiveMQ Queue Action Telah Aktif Dan Siap Menerima Pesan" owner="anti_fraud_keywords">
+<kw name="AMQ Aktifkan Subscriber ActiveMQ Queue Action" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:48.337153" level="INFO">attempt reconnection (True, None, 0)</msg>
+<msg time="2026-11-17T15:13:48.337569" level="INFO">Attempting connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:48.380896" level="INFO">Established connection to host 192.168.181.51, port 61613</msg>
+<msg time="2026-11-17T15:13:48.381433" level="INFO">Created thread &lt;Thread(Thread-75 (__receiver_loop), started daemon 140248323450560)&gt; using func &lt;function default_create_thread at 0x7f8e2b4a0880&gt;</msg>
+<msg time="2026-11-17T15:13:48.381601" level="INFO">Sending frame: 'STOMP'</msg>
+<msg time="2026-11-17T15:13:48.424438" level="INFO">Sending frame: 'SUBSCRIBE'</msg>
+<msg time="2026-11-17T15:13:48.424850" level="INFO">[AMQ] Subscriber STOMP aktif pada queue /queue/jns.anti.fraud.action (192.168.181.51:61613)</msg>
+<status status="PASS" start="2026-11-17T15:13:48.336244" elapsed="0.088877"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:48.335067" elapsed="0.090367"/>
+</kw>
+<kw name="And Database Memiliki Data Block State Aktif Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Block State Uji" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:48.707187" level="INFO">[DB] Block state aktif untuk client 101 (target: 6281200000001) disiapkan.</msg>
+<arg>101</arg>
+<arg>6281200000001</arg>
+<arg>MSISDN</arg>
+<arg>ACTIVE</arg>
+<status status="PASS" start="2026-11-17T15:13:48.427060" elapsed="0.280539"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:48.426213" elapsed="0.281797"/>
+</kw>
+<kw name="When Pengguna Role CCO Mengirimkan Permintaan Unblock Dengan Alasan Valid" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Unblock Target Dengan Alasan" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:48.709404" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'ccouser'...</msg>
+<msg time="2026-11-17T15:13:51.643681" level="INFO">[UI LOGIN] Pengguna 'ccouser' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:13:53.020364" level="INFO">[UI ACTION] Aksi Unblock target 6281200000001 dikirim via modal web.</msg>
+<arg>6281200000001</arg>
+<arg>Valid customer unblock request</arg>
+<status status="PASS" start="2026-11-17T15:13:48.709171" elapsed="4.311375"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:48.708542" elapsed="4.312192"/>
+</kw>
+<kw name="Then Status Block State Pada Database Berubah Menjadi INACTIVE" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Block State Database" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>6281200000001</arg>
+<arg>INACTIVE</arg>
+<arg>ccouser</arg>
+<arg>Valid customer unblock request</arg>
+<status status="PASS" start="2026-11-17T15:13:53.021686" elapsed="0.217550"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:53.021174" elapsed="0.218284"/>
+</kw>
+<kw name="And Kolom Unblocked By Dan Unblock Reason Terisi Sesuai Ekspektasi" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Block State Database" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>6281200000001</arg>
+<arg>INACTIVE</arg>
+<arg>ccouser</arg>
+<arg>Valid customer unblock request</arg>
+<status status="PASS" start="2026-11-17T15:13:53.240386" elapsed="0.213946"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:53.239862" elapsed="0.214923"/>
+</kw>
+<kw name="And Payload Exact JSON Diterima Pada Queue Action ActiveMQ" owner="anti_fraud_keywords">
+<kw name="AMQ Verifikasi Payload Exact JSON Diterima Pada Queue ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:53.458031" level="INFO">[AMQ QUEUE MSG] {"action":"UNBLOCK","block_id":57,"client_id":101,"client_name":"PT.DIGITAL VISION NUSANTARA","sender_id":0,"sender_name":"","scope":"MSISDN","target_value":"6281200000001","unblocked_by":"ccouser","unblock_reason":"Audit Unblock Reason"}</msg>
+<msg time="2026-11-17T15:13:53.458436" level="INFO">--- START AMQ Action Queue Verified | Length=279 chars | Parts=1 ---</msg>
+<msg time="2026-11-17T15:13:53.458575" level="INFO">{
+  "action": "UNBLOCK",
+  "block_id": 57,
+  "client_id": 101,
+  "client_name": "PT.DIGITAL VISION NUSANTARA",
+  "sender_id": 0,
+  "sender_name": "",
+  "scope": "MSISDN",
+  "target_value": "6281200000001",
+  "unblocked_by": "ccouser",
+  "unblock_reason": "Audit Unblock Reason"
+}</msg>
+<msg time="2026-11-17T15:13:53.458687" level="INFO">--- END AMQ Action Queue Verified ---</msg>
+<arg>6281200000001</arg>
+<arg>ccouser</arg>
+<arg>6.0</arg>
+<status status="PASS" start="2026-11-17T15:13:53.457078" elapsed="0.001808"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:53.455742" elapsed="0.003516"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:54.618388" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:53.461919" elapsed="1.157058"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:54.620371" level="INFO">Sending frame: 'DISCONNECT'</msg>
+<status status="PASS" start="2026-11-17T15:13:54.619585" elapsed="0.001320"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:55.135364" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:54.621382" elapsed="0.514838"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:53.460658" elapsed="1.675933"/>
+</kw>
+<tag>activemq</tag>
+<tag>blocklist</tag>
+<tag>cms</tag>
+<tag>happy_path</tag>
+<tag>P0</tag>
+<tag>TC-024</tag>
+<tag>unblock</tag>
+<status status="PASS" start="2026-11-17T15:13:47.953723" elapsed="7.183263"/>
+</test>
+<test id="s1-t25" name="TC-025 Validasi Penolakan Aksi Unblock Tanpa Alasan Atau Hanya Spasi" line="193">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:55.547417" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:55.171215" elapsed="0.377031"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:55.548788" elapsed="0.000530"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:55.170398" elapsed="0.379206"/>
+</kw>
+<kw name="Given Database Memiliki Data Block State Aktif Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Block State Uji" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:55.823745" level="INFO">[DB] Block state aktif untuk client 101 (target: 6281200000001) disiapkan.</msg>
+<arg>101</arg>
+<arg>6281200000001</arg>
+<arg>MSISDN</arg>
+<arg>ACTIVE</arg>
+<status status="PASS" start="2026-11-17T15:13:55.552340" elapsed="0.272275"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:55.550683" elapsed="0.274361"/>
+</kw>
+<kw name="When Pengguna Role CCO Mengirimkan Permintaan Unblock Dengan Alasan Kosong Atau Spasi" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Unblock Dengan Alasan Spasi Dan Pastikan Ditolak" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:55.828853" level="INFO">[UI LOGIN] Pengguna 'ccouser' sudah aktif.</msg>
+<msg time="2026-11-17T15:13:56.610349" level="INFO">[UI ASSERT] Client validation .has-error terbukti aktif pada modal.</msg>
+<msg time="2026-11-17T15:13:57.366411" level="INFO">[UI ASSERT] Server controller rejection terbukti: '×
+          Reason is required.'</msg>
+<arg>6281200000001</arg>
+<status status="PASS" start="2026-11-17T15:13:55.828014" elapsed="1.538541"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:55.826332" elapsed="1.540347"/>
+</kw>
+<kw name="Then Sistem Menolak Permintaan Unblock Dan Status Tetap ACTIVE" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Block State Database" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>6281200000001</arg>
+<arg>ACTIVE</arg>
+<arg>None</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:13:57.367475" elapsed="0.210121"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:57.367058" elapsed="0.211084"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:58.986050" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:57.581319" elapsed="1.405069"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:58.986714" elapsed="0.000315"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:59.424666" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:58.987236" elapsed="0.437814"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:57.579451" elapsed="1.845823"/>
+</kw>
+<tag>blocklist</tag>
+<tag>cms</tag>
+<tag>negative</tag>
+<tag>P1</tag>
+<tag>TC-025</tag>
+<tag>validation</tag>
+<status status="PASS" start="2026-11-17T15:13:55.168709" elapsed="4.256864"/>
+</test>
+<test id="s1-t26" name="TC-026 Verifikasi Fail Safe Di Mana Update Database Dilewati Dan Dicatat UNBLOCK_FAILED" line="199">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:13:59.851013" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:13:59.443222" elapsed="0.408624"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:13:59.852433" elapsed="0.000481"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:59.442630" elapsed="0.410617"/>
+</kw>
+<kw name="Given Database Memiliki Data Block State Aktif Untuk Client Uji" owner="anti_fraud_keywords">
+<kw name="DB Sisipkan Data Block State Uji" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:00.142290" level="INFO">[DB] Block state aktif untuk client 101 (target: 6281200000001) disiapkan.</msg>
+<arg>101</arg>
+<arg>6281200000001</arg>
+<arg>MSISDN</arg>
+<arg>ACTIVE</arg>
+<status status="PASS" start="2026-11-17T15:13:59.855501" elapsed="0.287177"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:13:59.854364" elapsed="0.288506"/>
+</kw>
+<kw name="And Gangguan Koneksi ActiveMQ Disimulasikan Pada SUT" owner="anti_fraud_keywords">
+<kw name="SSH Simulasikan Gangguan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:01.297357" level="INFO">[FAULT INJECTION] Koneksi SUT ke ActiveMQ (192.168.181.51:61613) diputus via iptables.</msg>
+<status status="PASS" start="2026-11-17T15:14:00.143780" elapsed="1.154177"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:00.143339" elapsed="1.155079"/>
+</kw>
+<kw name="When Pengguna Role CCO Mengirimkan Permintaan Unblock" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Unblock Target Dengan Alasan" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:01.301831" level="INFO">[UI LOGIN] Pengguna 'ccouser' sudah aktif.</msg>
+<msg time="2026-11-17T15:14:03.022160" level="INFO">[UI ACTION] Aksi Unblock target 6281200000001 dikirim via modal web.</msg>
+<arg>6281200000001</arg>
+<arg>Unblock Broker Disconnect Test</arg>
+<status status="PASS" start="2026-11-17T15:14:01.300941" elapsed="1.721419"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:01.299513" elapsed="1.723041"/>
+</kw>
+<kw name="Then Status Block State Pada Database Tetap ACTIVE" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Data Block State Database" owner="AntiFraudLibrary">
+<arg>101</arg>
+<arg>6281200000001</arg>
+<arg>ACTIVE</arg>
+<arg>None</arg>
+<arg>None</arg>
+<status status="PASS" start="2026-11-17T15:14:03.023639" elapsed="0.207195"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:03.023017" elapsed="0.208116"/>
+</kw>
+<kw name="And Audit Log Mencatat Kejadian UNBLOCK_FAILED" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Audit Log Tercatat" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:03.427918" level="INFO">[DB AUDIT] Audit log 'UNBLOCK_FAILED' tervalidasi di DB.</msg>
+<arg>101</arg>
+<arg>UNBLOCK_FAILED</arg>
+<arg>ccouser</arg>
+<status status="PASS" start="2026-11-17T15:14:03.232486" elapsed="0.196234"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:03.231680" elapsed="0.197506"/>
+</kw>
+<kw name="And Konektivitas ActiveMQ Pada SUT Berhasil Dipulihkan" owner="anti_fraud_keywords">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:04.617870" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:03.431520" elapsed="1.186978"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:03.430308" elapsed="1.188587"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:05.768122" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:04.622165" elapsed="1.146645"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:14:05.769495" elapsed="0.000535"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:06.216441" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:05.770489" elapsed="0.446288"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:04.620209" elapsed="1.596734"/>
+</kw>
+<tag>activemq</tag>
+<tag>blocklist</tag>
+<tag>cms</tag>
+<tag>fail_safe</tag>
+<tag>P0</tag>
+<tag>resilience</tag>
+<tag>TC-026</tag>
+<status status="PASS" start="2026-11-17T15:13:59.441498" elapsed="6.775670"/>
+</test>
+<test id="s1-t27" name="TC-027 Verifikasi Jejak Audit Trail Lengkap Untuk Seluruh Siklus Operasi Konfigurasi" line="208">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:06.626020" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:06.230532" elapsed="0.396715"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:14:06.628059" elapsed="0.000539"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:06.230126" elapsed="0.398760"/>
+</kw>
+<kw name="Given Database Memastikan Riwayat Audit Log Client Uji Bersih" owner="anti_fraud_keywords">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:07.037034" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:06.631043" elapsed="0.406885"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:06.629755" elapsed="0.408605"/>
+</kw>
+<kw name="When Pengguna Menjalankan Siklus Penuh Konfigurasi Client Uji" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Siklus Penuh Konfigurasi" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:07.041455" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'admin'...</msg>
+<msg time="2026-11-17T15:14:11.005356" level="INFO">[UI LOGIN] Pengguna 'admin' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:14:12.924836" level="INFO">[UI ACTION] Konfigurasi client 101 berhasil dibuat via UI modal form.</msg>
+<msg time="2026-11-17T15:14:12.924960" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:14:14.643112" level="INFO">[UI ACTION] Parameter konfigurasi client 101 berhasil diubah melalui form modal.</msg>
+<msg time="2026-11-17T15:14:14.643268" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:14:15.455946" level="INFO">[DIALOG] Browser prompt: 'Submit config ini untuk approval CCO?'</msg>
+<msg time="2026-11-17T15:14:16.513164" level="INFO">[UI ACTION] Aksi 'submit' untuk client 101 diklik via tombol antarmuka.</msg>
+<msg time="2026-11-17T15:14:16.513295" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'ccouser'...</msg>
+<msg time="2026-11-17T15:14:19.565844" level="INFO">[UI LOGIN] Pengguna 'ccouser' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:14:20.366282" level="INFO">[DIALOG] Browser prompt: 'Approve config ini?'</msg>
+<msg time="2026-11-17T15:14:21.007905" level="INFO">[UI ACTION] Aksi 'approve' untuk client 101 diklik via tombol antarmuka.</msg>
+<msg time="2026-11-17T15:14:21.008011" level="INFO">[UI LOGIN] Pengguna 'ccouser' sudah aktif.</msg>
+<msg time="2026-11-17T15:14:21.623454" level="INFO">[DIALOG] Browser prompt: 'Deactivate config ini?'</msg>
+<msg time="2026-11-17T15:14:22.536130" level="INFO">[UI ACTION] Aksi 'deactivate' untuk client 101 diklik via tombol antarmuka.</msg>
+<msg time="2026-11-17T15:14:22.536304" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'admin'...</msg>
+<msg time="2026-11-17T15:14:25.925485" level="INFO">[UI LOGIN] Pengguna 'admin' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:14:26.872945" level="INFO">[DIALOG] Browser prompt: 'Reopen config ini ke PENDING_APPROVAL?'</msg>
+<msg time="2026-11-17T15:14:27.700017" level="INFO">[UI ACTION] Aksi 'reopen' untuk client 101 diklik via tombol antarmuka.</msg>
+<msg time="2026-11-17T15:14:27.700148" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'ccouser'...</msg>
+<msg time="2026-11-17T15:14:30.379786" level="INFO">[UI LOGIN] Pengguna 'ccouser' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:14:31.189487" level="INFO">[DIALOG] Browser prompt: 'Reject config ini?'</msg>
+<msg time="2026-11-17T15:14:31.833059" level="INFO">[UI ACTION] Aksi 'reject' untuk client 101 diklik via tombol antarmuka.</msg>
+<msg time="2026-11-17T15:14:31.833199" level="INFO">[UI CYCLE] Siklus penuh konfigurasi selesai dijalankan via UI.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:14:07.040625" elapsed="24.792680"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:07.039367" elapsed="24.794123"/>
+</kw>
+<kw name="Then Seluruh Jejak Audit Trail Konfigurasi Terverifikasi Lengkap Pada Database" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Audit Log Tercatat" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:32.030450" level="INFO">[DB AUDIT] Audit log 'CONFIG_INSERT' tervalidasi di DB.</msg>
+<arg>101</arg>
+<arg>CONFIG_INSERT</arg>
+<arg>admin</arg>
+<status status="PASS" start="2026-11-17T15:14:31.834455" elapsed="0.196297"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:31.833895" elapsed="0.197007"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:33.268180" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:32.031750" elapsed="1.237077"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:14:33.269459" elapsed="0.000490"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:33.797831" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:33.270382" elapsed="0.528281"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:32.031348" elapsed="1.767678"/>
+</kw>
+<tag>audit</tag>
+<tag>cms</tag>
+<tag>compliance</tag>
+<tag>config</tag>
+<tag>P1</tag>
+<tag>TC-027</tag>
+<status status="PASS" start="2026-11-17T15:14:06.229384" elapsed="27.570036"/>
+</test>
+<test id="s1-t28" name="TC-028 Verifikasi Jejak Audit Trail Lengkap Untuk Operasi Whitelist Dan Unblock" line="214">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:34.242415" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:33.833034" elapsed="0.410252"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:14:34.243834" elapsed="0.000534"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:33.832451" elapsed="0.412207"/>
+</kw>
+<kw name="Given Database Memastikan Riwayat Audit Log Client Uji Bersih" owner="anti_fraud_keywords">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:34.607163" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:34.250050" elapsed="0.357890"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:34.248707" elapsed="0.359693"/>
+</kw>
+<kw name="When Pengguna Menjalankan Siklus Operasi Whitelist Dan Unblock" owner="anti_fraud_keywords">
+<kw name="UI Eksekusi Siklus Whitelist Dan Unblock" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:34.611371" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'admin'...</msg>
+<msg time="2026-11-17T15:14:37.774867" level="INFO">[UI LOGIN] Pengguna 'admin' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:14:39.134537" level="INFO">[UI ACTION] Whitelist msisdn:6281299990001 ditambahkan via form web.</msg>
+<msg time="2026-11-17T15:14:39.134701" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:14:39.779611" level="INFO">[DIALOG] Browser prompt: 'Nonaktifkan whitelist ini?'</msg>
+<msg time="2026-11-17T15:14:40.585450" level="INFO">[UI ACTION] Whitelist 6281299990001 ditoggle ke 'deactivate' via UI.</msg>
+<msg time="2026-11-17T15:14:40.585614" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:14:41.716427" level="INFO">[UI ACTION] Whitelist prefix:6281299 ditambahkan via form web.</msg>
+<msg time="2026-11-17T15:14:41.716574" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:14:42.408366" level="INFO">[UI ACTION] Whitelist 6281299 ditoggle ke 'deactivate' via UI.</msg>
+<msg time="2026-11-17T15:14:42.660060" level="INFO">[DB] Block state aktif untuk client 101 (target: 6281200000001) disiapkan.</msg>
+<msg time="2026-11-17T15:14:42.660790" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'ccouser'...</msg>
+<msg time="2026-11-17T15:14:45.667565" level="INFO">[UI LOGIN] Pengguna 'ccouser' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:14:47.126230" level="INFO">[UI ACTION] Aksi Unblock target 6281200000001 dikirim via modal web.</msg>
+<msg time="2026-11-17T15:14:47.126362" level="INFO">[UI CYCLE] Siklus Whitelist &amp; Unblock selesai dijalankan via UI.</msg>
+<arg>101</arg>
+<status status="PASS" start="2026-11-17T15:14:34.610715" elapsed="12.515767"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:34.609461" elapsed="12.517190"/>
+</kw>
+<kw name="Then Seluruh Jejak Audit Trail Whitelist Dan Unblock Terverifikasi Lengkap Pada Database" owner="anti_fraud_keywords">
+<kw name="DB Verifikasi Audit Log Tercatat" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:47.347305" level="INFO">[DB AUDIT] Audit log 'WHITELIST_ADD' tervalidasi di DB.</msg>
+<arg>101</arg>
+<arg>WHITELIST_ADD</arg>
+<arg>admin</arg>
+<status status="PASS" start="2026-11-17T15:14:47.127610" elapsed="0.220010"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:47.127055" elapsed="0.220731"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:48.554758" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:47.348719" elapsed="1.206788"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:14:48.556225" elapsed="0.000502"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:49.096485" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:48.557158" elapsed="0.540225"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:47.348276" elapsed="1.749478"/>
+</kw>
+<tag>audit</tag>
+<tag>cms</tag>
+<tag>compliance</tag>
+<tag>P1</tag>
+<tag>TC-028</tag>
+<tag>unblock</tag>
+<tag>whitelist</tag>
+<status status="PASS" start="2026-11-17T15:14:33.831327" elapsed="15.266832"/>
+</test>
+<test id="s1-t29" name="TC-029 Verifikasi Hak Akses Menyeluruh Multi Tenant Bagi Pengguna Super Tenant JATIS" line="220">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:49.544377" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:49.133322" elapsed="0.412078"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:14:49.546187" elapsed="0.000491"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:49.132493" elapsed="0.414493"/>
+</kw>
+<kw name="Given Pengguna Super Admin JATIS Berhasil Login Ke Portal JNS7" owner="anti_fraud_keywords">
+<kw name="UI Buka Portal Dan Login Sebagai Pengguna" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:49.550762" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'admin'...</msg>
+<msg time="2026-11-17T15:14:52.908683" level="INFO">[UI LOGIN] Pengguna 'admin' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<arg>admin</arg>
+<doc>Performs true browser login via the portal login form.</doc>
+<status status="PASS" start="2026-11-17T15:14:49.549907" elapsed="3.358998"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:49.548123" elapsed="3.361018"/>
+</kw>
+<kw name="When Pengguna Mengakses Seluruh Menu Anti Fraud" owner="anti_fraud_keywords">
+<kw name="UI Akses Seluruh Menu Anti Fraud Lintas Tenant" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:52.910545" level="INFO">[UI LOGIN] Pengguna 'admin' sudah aktif.</msg>
+<msg time="2026-11-17T15:14:54.786175" level="INFO">[UI ACTION] Seluruh menu Anti Fraud berhasil diakses oleh Super Admin JATIS.</msg>
+<status status="PASS" start="2026-11-17T15:14:52.910270" elapsed="1.876058"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:52.909641" elapsed="1.876861"/>
+</kw>
+<kw name="Then Seluruh Data Lintas Tenant Dapat Dilihat Dan Dikelola Secara Penuh" owner="anti_fraud_keywords">
+<kw name="SSH Verifikasi Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:55.533809" level="INFO">[LOG DELTA] Log delta Laravel SUT bebas dari kesalahan fatal.</msg>
+<status status="PASS" start="2026-11-17T15:14:54.787309" elapsed="0.747612"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:54.786890" elapsed="0.748493"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:56.675300" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:55.538671" elapsed="1.137552"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:14:56.676816" elapsed="0.000522"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:57.107390" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:56.677750" elapsed="0.430537"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:55.536985" elapsed="1.571672"/>
+</kw>
+<tag>cms</tag>
+<tag>multitenant</tag>
+<tag>P0</tag>
+<tag>rbac</tag>
+<tag>super_tenant</tag>
+<tag>TC-029</tag>
+<status status="PASS" start="2026-11-17T15:14:49.130120" elapsed="7.979045"/>
+</test>
+<test id="s1-t30" name="TC-030 Verifikasi Isolasi Data Pengguna Non JATIS Pada Seluruh Endpoint DataTables AJAX" line="226">
+<kw name="Persiapkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="SETUP">
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:58.054454" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:57.148522" elapsed="0.906349"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:14:58.055266" elapsed="0.000263"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:57.147872" elapsed="0.907813"/>
+</kw>
+<kw name="Given Fixture Data Multi Tenant Client Sepuluh Dan Dua Puluh Tersedia Di Database" owner="anti_fraud_keywords">
+<kw name="DB Siapkan Fixture Multi Tenant Client Sepuluh Dan Dua Puluh" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:58.541065" level="INFO">[DB] Fixture Multi-Tenant Client 10 dan Client 20 disiapkan.</msg>
+<status status="PASS" start="2026-11-17T15:14:58.056692" elapsed="0.485185"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:58.056159" elapsed="0.486154"/>
+</kw>
+<kw name="When Pengguna Non JATIS Client Sepuluh Mengakses Endpoint DataTables AJAX" owner="anti_fraud_keywords">
+<kw name="UI Observasi Isolasi Multi Tenant Pada Seluruh Datatable" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:14:58.546294" level="INFO">[UI LOGIN] Melakukan autentikasi browser untuk user 'client10user'...</msg>
+<msg time="2026-11-17T15:15:02.711737" level="INFO">[UI LOGIN] Pengguna 'client10user' berhasil masuk. Halaman aktif: http://192.168.181.60/mobilebroadcast/home</msg>
+<msg time="2026-11-17T15:15:03.714511" level="INFO">[UI ASSERT] Isolasi tenant terbukti 100%. Data Client 10 ada, Client 20 nihil.</msg>
+<arg>client10user</arg>
+<arg>10</arg>
+<arg>20</arg>
+<status status="PASS" start="2026-11-17T15:14:58.545316" elapsed="5.169440"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:14:58.543568" elapsed="5.171346"/>
+</kw>
+<kw name="Then Respons Hanya Menampilkan Data Milik Client Sepuluh" owner="anti_fraud_keywords">
+<kw name="SSH Verifikasi Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:15:04.407705" level="INFO">[LOG DELTA] Log delta Laravel SUT bebas dari kesalahan fatal.</msg>
+<status status="PASS" start="2026-11-17T15:15:03.716173" elapsed="0.692760"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:15:03.715579" elapsed="0.693812"/>
+</kw>
+<kw name="And Data Milik Client Dua Puluh Terbukti Tidak Bocor Sama Sekali" owner="anti_fraud_keywords">
+<kw name="SSH Verifikasi Log Delta Laravel Bebas Dari Kesalahan Fatal" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:15:05.089160" level="INFO">[LOG DELTA] Log delta Laravel SUT bebas dari kesalahan fatal.</msg>
+<status status="PASS" start="2026-11-17T15:15:04.411393" elapsed="0.679116"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:15:04.410338" elapsed="0.680558"/>
+</kw>
+<kw name="Pulihkan Lingkungan Pengujian Anti Fraud" owner="anti_fraud_keywords" type="TEARDOWN">
+<kw name="SSH Pulihkan Koneksi ActiveMQ Pada SUT" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:15:06.361816" level="INFO">[FAULT RESTORATION] Koneksi SUT ke ActiveMQ dipulihkan.</msg>
+<status status="PASS" start="2026-11-17T15:15:05.094581" elapsed="1.267443"/>
+</kw>
+<kw name="AMQ Tutup Seluruh Koneksi ActiveMQ" owner="AntiFraudLibrary">
+<status status="PASS" start="2026-11-17T15:15:06.362242" elapsed="0.000142"/>
+</kw>
+<kw name="DB Bersihkan Data Uji Database Anti Fraud" owner="AntiFraudLibrary">
+<msg time="2026-11-17T15:15:06.732677" level="INFO">[DB] Data uji anti-fraud (client 101, 9999) dibersihkan.</msg>
+<status status="PASS" start="2026-11-17T15:15:06.362496" elapsed="0.371071"/>
+</kw>
+<status status="PASS" start="2026-11-17T15:15:05.092609" elapsed="1.641374"/>
+</kw>
+<tag>cms</tag>
+<tag>isolation</tag>
+<tag>multitenant</tag>
+<tag>P0</tag>
+<tag>security</tag>
+<tag>TC-030</tag>
+<status status="PASS" start="2026-11-17T15:14:57.146557" elapsed="9.587917"/>
 </test>
 <doc>Suite Pengujian Otomasi E2E &amp; Backend Anti-Fraud CMS JNS7
 Tiket: PB082643640012YA | SUT: MobileBroadcast JNS7
 Menerapkan Clean BDD Murni, Zero False Positive &amp; Transparent Logging</doc>
-<status status="PASS" start="2026-11-17T09:46:39.075951" elapsed="4.653003"/>
+<status status="PASS" start="2026-11-17T15:11:19.345712" elapsed="227.430639"/>
 </suite>
 <statistics>
 <total>
-<stat pass="1" fail="0" skip="0">All Tests</stat>
+<stat pass="30" fail="0" skip="0">All Tests</stat>
 </total>
 <tag>
-<stat pass="1" fail="0" skip="0">activemq</stat>
-<stat pass="1" fail="0" skip="0">cms</stat>
-<stat pass="1" fail="0" skip="0">happy_path</stat>
-<stat pass="1" fail="0" skip="0">P0</stat>
+<stat pass="10" fail="0" skip="0">activemq</stat>
+<stat pass="3" fail="0" skip="0">approval</stat>
+<stat pass="2" fail="0" skip="0">audit</stat>
+<stat pass="4" fail="0" skip="0">blocklist</stat>
+<stat pass="30" fail="0" skip="0">cms</stat>
+<stat pass="2" fail="0" skip="0">compliance</stat>
+<stat pass="13" fail="0" skip="0">config</stat>
+<stat pass="1" fail="0" skip="0">deactivate</stat>
+<stat pass="1" fail="0" skip="0">exclusive</stat>
+<stat pass="1" fail="0" skip="0">fail_safe</stat>
+<stat pass="8" fail="0" skip="0">happy_path</stat>
+<stat pass="1" fail="0" skip="0">isolation</stat>
+<stat pass="5" fail="0" skip="0">lifecycle</stat>
+<stat pass="1" fail="0" skip="0">monitoring</stat>
+<stat pass="1" fail="0" skip="0">msisdn</stat>
+<stat pass="2" fail="0" skip="0">multitenant</stat>
+<stat pass="8" fail="0" skip="0">negative</stat>
+<stat pass="15" fail="0" skip="0">P0</stat>
+<stat pass="15" fail="0" skip="0">P1</stat>
+<stat pass="1" fail="0" skip="0">prefix</stat>
+<stat pass="4" fail="0" skip="0">rbac</stat>
+<stat pass="1" fail="0" skip="0">reactivation</stat>
+<stat pass="3" fail="0" skip="0">regression</stat>
+<stat pass="2" fail="0" skip="0">reopen</stat>
+<stat pass="1" fail="0" skip="0">resilience</stat>
+<stat pass="3" fail="0" skip="0">security</stat>
+<stat pass="1" fail="0" skip="0">sidebar</stat>
+<stat pass="1" fail="0" skip="0">snapshot</stat>
+<stat pass="1" fail="0" skip="0">state_machine</stat>
+<stat pass="1" fail="0" skip="0">super_tenant</stat>
 <stat pass="1" fail="0" skip="0">sync</stat>
+<stat pass="1" fail="0" skip="0">TC-001</stat>
+<stat pass="1" fail="0" skip="0">TC-002</stat>
+<stat pass="1" fail="0" skip="0">TC-003</stat>
+<stat pass="1" fail="0" skip="0">TC-004</stat>
+<stat pass="1" fail="0" skip="0">TC-005</stat>
+<stat pass="1" fail="0" skip="0">TC-006</stat>
+<stat pass="1" fail="0" skip="0">TC-007</stat>
+<stat pass="1" fail="0" skip="0">TC-008</stat>
+<stat pass="1" fail="0" skip="0">TC-009</stat>
+<stat pass="1" fail="0" skip="0">TC-010</stat>
+<stat pass="1" fail="0" skip="0">TC-011</stat>
+<stat pass="1" fail="0" skip="0">TC-012</stat>
+<stat pass="1" fail="0" skip="0">TC-013</stat>
+<stat pass="1" fail="0" skip="0">TC-014</stat>
+<stat pass="1" fail="0" skip="0">TC-015</stat>
 <stat pass="1" fail="0" skip="0">TC-016</stat>
+<stat pass="1" fail="0" skip="0">TC-017</stat>
+<stat pass="1" fail="0" skip="0">TC-018</stat>
+<stat pass="1" fail="0" skip="0">TC-019</stat>
+<stat pass="1" fail="0" skip="0">TC-020</stat>
+<stat pass="1" fail="0" skip="0">TC-021</stat>
+<stat pass="1" fail="0" skip="0">TC-022</stat>
+<stat pass="1" fail="0" skip="0">TC-023</stat>
+<stat pass="1" fail="0" skip="0">TC-024</stat>
+<stat pass="1" fail="0" skip="0">TC-025</stat>
+<stat pass="1" fail="0" skip="0">TC-026</stat>
+<stat pass="1" fail="0" skip="0">TC-027</stat>
+<stat pass="1" fail="0" skip="0">TC-028</stat>
+<stat pass="1" fail="0" skip="0">TC-029</stat>
+<stat pass="1" fail="0" skip="0">TC-030</stat>
+<stat pass="1" fail="0" skip="0">toggle</stat>
+<stat pass="2" fail="0" skip="0">unblock</stat>
+<stat pass="4" fail="0" skip="0">validation</stat>
+<stat pass="6" fail="0" skip="0">whitelist</stat>
 </tag>
 <suite>
-<stat name="Test Anti Fraud Cms" id="s1" pass="1" fail="0" skip="0">Test Anti Fraud Cms</stat>
+<stat name="Test Anti Fraud Cms" id="s1" pass="30" fail="0" skip="0">Test Anti Fraud Cms</stat>
 </suite>
 </statistics>
 <errors>
