@@ -59,13 +59,13 @@ TC-007 Edit Konfigurasi APPROVED Mengakibatkan Status Kembali Ke DRAFT Dan Reset
     Then Status Konfigurasi Otomatis Kembali Menjadi DRAFT
     And Kolom Approved By Direset Menjadi Null
 
-TC-008 Submit Konfigurasi DRAFT Menjadi PENDING_APPROVAL Dan Buktikan Nol Reload ActiveMQ
-    [Tags]    P0    TC-008    cms    config    activemq    negative
+TC-008 Submit Konfigurasi DRAFT Menjadi PENDING_APPROVAL Dan Menyiarkan Reload ActiveMQ
+    [Tags]    P0    TC-008    cms    config    activemq    happy_path
     Given Subscriber ActiveMQ Topic Command Telah Aktif Dan Siap Menerima Pesan
     And Database Memiliki Konfigurasi Anti Fraud Berstatus DRAFT Untuk Client Uji
     When Pengguna Super Admin Mengirimkan Aksi Submit Konfigurasi
     Then Status Konfigurasi Pada Database Berubah Menjadi PENDING_APPROVAL
-    And Ketiadaan Sinyal Reload Pada ActiveMQ Topic Terbukti Selama Rentang Waktu Pengamatan
+    And Sinyal Reload Anti Fraud Diterima Pada Topic ActiveMQ
 
 TC-009 Verifikasi Restriksi Hak Akses Approval Bagi Pengguna Non CCO
     [Tags]    P0    TC-009    cms    security    rbac    negative
@@ -186,8 +186,8 @@ TC-024 CCO Melakukan Unblock Target Aktif Dan Verifikasi Exact JSON Pada ActiveM
     Given Subscriber ActiveMQ Queue Action Telah Aktif Dan Siap Menerima Pesan
     And Database Memiliki Data Block State Aktif Untuk Client Uji
     When Pengguna Role CCO Mengirimkan Permintaan Unblock Dengan Alasan Valid
-    Then Status Block State Pada Database Berubah Menjadi INACTIVE
-    And Kolom Unblocked By Dan Unblock Reason Terisi Sesuai Ekspektasi
+    Then Notifikasi Antrean Unblock Berhasil Ditampilkan Pada Antarmuka
+    And Permintaan Unblock Tercatat Dalam Audit Log Database
     And Payload Exact JSON Diterima Pada Queue Action ActiveMQ
 
 TC-025 Validasi Penolakan Aksi Unblock Tanpa Alasan Atau Hanya Spasi

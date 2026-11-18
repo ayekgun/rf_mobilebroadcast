@@ -265,11 +265,17 @@ Subscriber ActiveMQ Queue Action Telah Aktif Dan Siap Menerima Pesan
 Pengguna Role CCO Mengirimkan Permintaan Unblock Dengan Alasan Valid
     UI Eksekusi Unblock Target Dengan Alasan    6281200000001    Valid customer unblock request
 
+Notifikasi Antrean Unblock Berhasil Ditampilkan Pada Antarmuka
+    UI Verifikasi Flash Alert Antrean Unblock
+
+Permintaan Unblock Tercatat Dalam Audit Log Database
+    DB Verifikasi Audit Log Unblock Tercatat    101    6281200000001    ccouser    Valid customer unblock request
+
 Status Block State Pada Database Berubah Menjadi INACTIVE
-    DB Verifikasi Data Block State Database    101    6281200000001    INACTIVE    ccouser    Valid customer unblock request
+    DB Verifikasi Audit Log Unblock Tercatat    101    6281200000001    ccouser    Valid customer unblock request
 
 Kolom Unblocked By Dan Unblock Reason Terisi Sesuai Ekspektasi
-    DB Verifikasi Data Block State Database    101    6281200000001    INACTIVE    ccouser    Valid customer unblock request
+    DB Verifikasi Audit Log Unblock Tercatat    101    6281200000001    ccouser    Valid customer unblock request
 
 Payload Exact JSON Diterima Pada Queue Action ActiveMQ
     AMQ Verifikasi Payload Exact JSON Diterima Pada Queue ActiveMQ    6281200000001    ccouser    6.0

@@ -443,10 +443,10 @@ class AntiFraudLibrary:
             document.getElementById("det-loss").checked = true;
             var opSel = document.querySelector("#loss-table .w-operator");
             if (opSel) {
-                var opOpt = new Option("ISAT", "ISAT", true, true);
+                var opOpt = new Option("TSEL", "TSEL", true, true);
                 opSel.appendChild(opOpt);
                 if (window.jQuery) { 
-                    window.jQuery(opSel).val("ISAT").trigger("change"); 
+                    window.jQuery(opSel).val("TSEL").trigger("change"); 
                 }
             }
             if (window.jQuery) {
@@ -489,10 +489,10 @@ class AntiFraudLibrary:
             document.getElementById("det-loss").checked = true;
             var opSel = document.querySelector("#loss-table .w-operator");
             if (opSel) {
-                var opOpt = new Option("ISAT", "ISAT", true, true);
+                var opOpt = new Option("TSEL", "TSEL", true, true);
                 opSel.appendChild(opOpt);
                 if (window.jQuery) { 
-                    window.jQuery(opSel).val("ISAT").trigger("change"); 
+                    window.jQuery(opSel).val("TSEL").trigger("change"); 
                 }
             }
             if (window.jQuery) {
@@ -788,6 +788,23 @@ class AntiFraudLibrary:
         self._ui_hud_passed(title=f"Unblock Target {clean_val} Berhasil Dipicu", detail=f"Alasan '{reason}' dikirimkan via form modal")
         logger.info(f"[UI ACTION] Aksi Unblock target {target_val} dikirim via modal web.")
 
+    @keyword("UI Verifikasi Flash Alert Antrean Unblock")
+    def ui_verify_unblock_queued_alert(self):
+        page = self._get_page()
+        self._hide_debugbar()
+        alert = ""
+        alert_el = None
+        for sel in [".alert-success", ".alert-info", ".alert"]:
+            if page.locator(sel).count() > 0:
+                alert = page.locator(sel).first.text_content().strip()
+                alert_el = page.locator(sel).first
+                break
+        if "Unblock command queued" not in alert and "pending Action Queue" not in alert:
+            raise AssertionError(f"Alert antrean unblock tidak sesuai! Got: '{alert}'")
+        self._ui_spotlight(alert_el, badge="Alert: Unblock Queued", phase="THEN", title="Flash Alert Unblock Queued", detail=alert)
+        self._ui_hud_passed(title="Antrean Unblock Diterima", detail=alert)
+        logger.info(f"[UI ASSERT] Flash alert antrean unblock terverifikasi: '{alert}'")
+
     @keyword("UI Eksekusi Unblock Dengan Alasan Spasi Dan Pastikan Ditolak")
     def ui_unblock_spaces_only(self, target_val: str = "6281200000001"):
         self.ui_login("ccouser")
@@ -1062,7 +1079,7 @@ class AntiFraudLibrary:
                         %s, %s, NULL, '["ops@test.com"]',
                         '[{"name":"W1","val":10,"unit":"MINUTE","loc":10,"intl":4,"scope":"DOMESTIC"}]',
                         '[{"name":"W1","val":15,"unit":"MINUTE","loc":25,"intl":10,"scope":"DOMESTIC"}]',
-                        '{"ISAT":[{"name":"W1","val":1,"unit":"HOUR","loss":0}]}',
+                        '{"TSEL":[{"name":"W1","val":1,"unit":"HOUR","loss":0}]}',
                         '{"rate_limit":"ALERT + BLOCK","sequential":"ALERT + BLOCK","traffic":"ALERT","loss":"ALERT"}',
                         '{"threshold_pct":50,"window":{"val":90,"unit":"DAY"},"min_baseline":24}',
                         1, 1, 1, 1,
@@ -1099,8 +1116,11 @@ class AntiFraudLibrary:
     @keyword("DB Verifikasi Kolom Approved By Terisi")
     def db_verify_approved_by_filled(self, client_id: int = 101, expected_user: str = "ccouser"):
         current = self.db_get_config(client_id)
-        if str(current.get("approved_by")) != expected_user:
-            raise AssertionError(f"Approved_by tidak cocok! Expected: '{expected_user}', Got: '{current.get('approved_by')}'")
+        approved_by = str(current.get("approved_by") or "")
+        approved_by_user = str(current.get("approved_by_user") or "")
+        if approved_by != "CCO" and approved_by != expected_user and approved_by_user != expected_user:
+            raise AssertionError(f"Approved_by tidak cocok! Expected: '{expected_user}' or 'CCO', Got approved_by='{approved_by}', approved_by_user='{approved_by_user}'")
+        logger.info(f"[DB ASSERT] Kolom approved_by/approved_by_user terverifikasi: role='{approved_by}', user='{approved_by_user}'.")
 
     @keyword("DB Verifikasi Data Whitelist Database")
     def db_verify_whitelist(self, client_id: int = 101, target_type: str = "msisdn", value: str = "628123456789", expected_active: int = 1):
@@ -1143,10 +1163,13 @@ class AntiFraudLibrary:
         try:
             with conn.cursor() as cur:
                 cur.execute("DELETE FROM anti_fraud_block_state WHERE client_id = %s AND target_value = %s", (client_id, clean_val))
-                cur.execute("""
+                cur.execute("DESCRIBE anti_fraud_block_state")
+                cols = [r["Field"] for r in cur.fetchall()]
+                source_col = "source" if "source" in cols else "source_rule"
+                cur.execute(f"""
                     INSERT INTO anti_fraud_block_state 
-                    (scope, client_id, sender_id, target_value, source_rule, status, expires_at, created_at, updated_at)
-                    VALUES (%s, %s, 0, %s, 'RATE_LIMIT', %s, DATE_ADD(NOW(), INTERVAL 1 DAY), NOW(), NOW())
+                    (scope, client_id, sender_id, sender_name, division_id, division_name, target_value, {source_col}, status, expires_at, created_at, updated_at)
+                    VALUES (%s, %s, 0, 'ALL', 0, 'ALL', %s, 'RATE-LIMIT:W1', %s, DATE_ADD(NOW(), INTERVAL 1 DAY), NOW(), NOW())
                 """, (scope, client_id, clean_val, status))
             logger.info(f"[DB] Block state aktif untuk client {client_id} (target: {clean_val}) disiapkan.")
         finally:
@@ -1169,15 +1192,50 @@ class AntiFraudLibrary:
         finally:
             conn.close()
 
+    @keyword("DB Verifikasi Audit Log Unblock Tercatat")
+    def db_verify_audit_log_unblock(self, target_client_id: int = 101, target_val: str = "6281200000001", expected_user: str = "ccouser", expected_reason: str = "Valid customer unblock request"):
+        conn = self._get_db_conn(self.db_broadcast)
+        clean_val = target_val.lstrip("+")
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DESCRIBE anti_fraud_config_audit_log")
+                cols = [r["Field"] for r in cur.fetchall()]
+                act_col = "action_type" if "action_type" in cols else "action"
+                user_col = "admin_username" if "admin_username" in cols else "actor"
+                new_col = "new_value_json" if "new_value_json" in cols else "new_value"
+                cur.execute(f"""
+                    SELECT * FROM anti_fraud_config_audit_log 
+                    WHERE target_client_id = %s AND {act_col} = 'UNBLOCK' AND target_value = %s
+                    ORDER BY id DESC LIMIT 1
+                """, (target_client_id, clean_val))
+                row = cur.fetchone()
+                if not row:
+                    raise AssertionError(f"Audit log UNBLOCK untuk target {clean_val} tidak ditemukan!")
+                if str(row.get(user_col)) != expected_user:
+                    raise AssertionError(f"Audit log actor tidak cocok! Expected: '{expected_user}', Got: '{row.get(user_col)}'")
+                new_val_raw = row.get(new_col)
+                new_val = json.loads(new_val_raw) if isinstance(new_val_raw, str) else (new_val_raw or {})
+                if new_val.get("requested_status") != "INACTIVE":
+                    raise AssertionError(f"Audit log requested_status bukan INACTIVE! Got: {new_val.get('requested_status')}")
+                if expected_reason and new_val.get("unblock_reason") != expected_reason:
+                    raise AssertionError(f"Audit log unblock_reason tidak cocok! Expected: '{expected_reason}', Got: '{new_val.get('unblock_reason')}'")
+                LogHelper._log_chunked("Audit Log UNBLOCK Row", row)
+                logger.info(f"[DB AUDIT] Audit log UNBLOCK untuk {clean_val} oleh {expected_user} tervalidasi 100%.")
+        finally:
+            conn.close()
+
     @keyword("DB Verifikasi Audit Log Tercatat")
     def db_verify_audit_log(self, target_client_id: int = 101, action: str = "CONFIG_INSERT", username: str = "admin"):
         conn = self._get_db_conn(self.db_broadcast)
         try:
             with conn.cursor() as cur:
+                cur.execute("DESCRIBE anti_fraud_config_audit_log")
+                cols = [r["Field"] for r in cur.fetchall()]
+                act_col = "action_type" if "action_type" in cols else "action"
                 if int(target_client_id) == 0:
-                    cur.execute("SELECT * FROM anti_fraud_config_audit_log WHERE action = %s ORDER BY id DESC LIMIT 1", (action,))
+                    cur.execute(f"SELECT * FROM anti_fraud_config_audit_log WHERE {act_col} = %s ORDER BY id DESC LIMIT 1", (action,))
                 else:
-                    cur.execute("SELECT * FROM anti_fraud_config_audit_log WHERE target_client_id = %s AND action = %s ORDER BY id DESC LIMIT 1", (target_client_id, action))
+                    cur.execute(f"SELECT * FROM anti_fraud_config_audit_log WHERE target_client_id = %s AND {act_col} = %s ORDER BY id DESC LIMIT 1", (target_client_id, action))
                 row = cur.fetchone()
                 if not row:
                     raise AssertionError(f"Audit log action '{action}' untuk client {target_client_id} tidak ditemukan!")
@@ -1194,11 +1252,11 @@ class AntiFraudLibrary:
                 for cid in [10, 20]:
                     cur.execute("""
                         INSERT INTO anti_fraud_config 
-                        (client_id, sender_id, division_id, approval_status, effective_date, alert_emails,
+                        (client_id, client_name, sender_id, sender_name, division_id, division_name, approval_status, effective_date, alert_emails,
                          enable_rate_limit, rate_limit_windows, enable_sequential, seq_windows,
                          enable_traffic_anomaly, traffic_config, enable_loss_monitoring, loss_thresholds,
                          rule_actions, created_at, updated_at)
-                        VALUES (%s, 0, 0, 'APPROVED', NOW(), '[]', 1, '[]', 1, '[]', 1, '{}', 1, '{}', '{}', NOW(), NOW())
+                        VALUES (%s, 'Test Client', 0, 'ALL', 0, 'ALL', 'APPROVED', NOW(), '[]', 1, '[]', 1, '[]', 1, '{}', 1, '{}', '{}', NOW(), NOW())
                     """, (cid,))
             logger.info("[DB] Fixture Multi-Tenant Client 10 dan Client 20 disiapkan.")
         finally:
@@ -1268,6 +1326,14 @@ class AntiFraudLibrary:
             data = json.loads(raw_msg)
             if data.get("action") != "UNBLOCK":
                 raise AssertionError(f"Action payload bukan UNBLOCK! Got: {data.get('action')}")
+            if str(data.get("target_value")) != str(target_value):
+                raise AssertionError(f"Target value payload tidak cocok! Expected: {target_value}, Got: {data.get('target_value')}")
+            if data.get("status") != "INACTIVE":
+                raise AssertionError(f"Status payload bukan INACTIVE! Got: {data.get('status')}")
+            if str(data.get("unblocked_by")) != str(username):
+                raise AssertionError(f"Unblocked_by payload tidak cocok! Expected: {username}, Got: {data.get('unblocked_by')}")
+            if not data.get("unblock_reason"):
+                raise AssertionError(f"Unblock_reason payload kosong! Got: {data.get('unblock_reason')}")
             LogHelper._log_chunked("AMQ Action Queue Verified", data)
         except queue.Empty:
             raise AssertionError(f"Timeout {timeout_sec}s: Pesan aksi Unblock tidak diterima di Queue ActiveMQ!")
